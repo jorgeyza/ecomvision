@@ -1,6 +1,6 @@
 import { type AppType } from "next/app";
 import { ChakraBaseProvider } from "@chakra-ui/react";
-import { Inter } from "@next/font/google";
+import { Inter } from "next/font/google";
 
 import Layout from "~/components/layout";
 
