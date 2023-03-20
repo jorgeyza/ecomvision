@@ -4,6 +4,7 @@ specifiers:
   '@chakra-ui/react': ^2.5.2
   '@emotion/react': ^11.10.6
   '@emotion/styled': ^11.10.6
+  '@next/font': ^13.2.4
   '@prisma/client': ^4.9.0
   '@tanstack/react-query': ^4.20.2
   '@trpc/client': ^10.9.0
@@ -31,6 +32,7 @@ dependencies:
   '@chakra-ui/react': 2.5.2_swvn7aw537nzp5i3amtbyedzyq
   '@emotion/react': 11.10.6_pmekkgnqduwlme35zpnqhenc34
   '@emotion/styled': 11.10.6_oouaibmszuch5k64ms7uxp2aia
+  '@next/font': 13.2.4
   '@prisma/client': 4.11.0_prisma@4.11.0
   '@tanstack/react-query': 4.28.0_biqbaboplfbrettd7655fr4n2y
   '@trpc/client': 10.16.0_@trpc+server@10.16.0
@@ -1362,6 +1364,10 @@ packages:
     dependencies:
       glob: 7.1.7
     dev: true
+
+  /@next/font/13.2.4:
+    resolution: {integrity: sha512-lMAnuOYjv5g22WhD00u0DQ9u2rTMJH0S64PKE4Sy8Y2q+FJTYs6ZHT2z3VRoI8+AOWSLK4FirpnygcjOienQ9A==}
+    dev: false
 
   /@next/swc-android-arm-eabi/13.2.4:
     resolution: {integrity: sha512-DWlalTSkLjDU11MY11jg17O1gGQzpRccM9Oes2yTqj2DpHndajrXHGxj9HGtJ+idq2k7ImUdJVWS2h2l/EDJOw==}
