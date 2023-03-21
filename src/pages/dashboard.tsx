@@ -9,7 +9,7 @@ const Home: NextPage = () => {
         <meta name="description" content="View your data easily in this dashboard" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>hello</main>
+      <div>HERE GOES THE DASHBOARD</div>
     </>
   );
 };

@@ -1,6 +1,7 @@
 import { type AppType } from "next/app";
 import { ChakraBaseProvider } from "@chakra-ui/react";
 import { Inter } from "next/font/google";
+import { atom, Provider } from "jotai";
 
 import Layout from "~/components/layout";
 
@@ -13,12 +14,16 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
+export const drawerAtom = atom(true);
+
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
     <ChakraBaseProvider theme={theme}>
-      <Layout className={inter.className}>
-        <Component {...pageProps} />
-      </Layout>
+      <Provider>
+        <Layout className={inter.className}>
+          <Component {...pageProps} />
+        </Layout>
+      </Provider>
     </ChakraBaseProvider>
   );
 };

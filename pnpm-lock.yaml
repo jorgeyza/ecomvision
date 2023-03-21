@@ -19,6 +19,8 @@ specifiers:
   eslint: ^8.34.0
   eslint-config-next: ^13.2.1
   framer-motion: ^10.6.1
+  jotai: ^2.0.3
+  lucide-react: ^0.127.0
   next: ^13.2.1
   prisma: ^4.9.0
   react: 18.2.0
@@ -38,6 +40,8 @@ dependencies:
   '@trpc/react-query': 10.16.0_v5tfig22lh3a2q5x6bgupkqhli
   '@trpc/server': 10.16.0
   framer-motion: 10.6.1_biqbaboplfbrettd7655fr4n2y
+  jotai: 2.0.3_react@18.2.0
+  lucide-react: 0.127.0_react@18.2.0
   next: 13.2.4_biqbaboplfbrettd7655fr4n2y
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
@@ -3084,6 +3088,18 @@ packages:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
     dev: true
 
+  /jotai/2.0.3_react@18.2.0:
+    resolution: {integrity: sha512-MMjhSPAL3RoeZD9WbObufRT2quThEAEknHHridf2ma8Ml7ZVQmUiHk0ssdbR3F0h3kcwhYqSGJ59OjhPge7RRg==}
+    engines: {node: '>=12.20.0'}
+    peerDependencies:
+      react: '>=17.0.0'
+    peerDependenciesMeta:
+      react:
+        optional: true
+    dependencies:
+      react: 18.2.0
+    dev: false
+
   /js-sdsl/4.3.0:
     resolution: {integrity: sha512-mifzlm2+5nZ+lEcLJMoBK0/IH/bDg8XnJfd/Wq6IP+xoCjLZsTOnV2QpxlVbX9bMnkl5PdEjNtBJ9Cj1NjifhQ==}
     dev: true
@@ -3174,6 +3190,14 @@ packages:
     dependencies:
       yallist: 4.0.0
     dev: true
+
+  /lucide-react/0.127.0_react@18.2.0:
+    resolution: {integrity: sha512-9xxwl2FbdwWDjB0L6FEsOSbeOVp7Pj+L3urz+xDJNx1xggmQgGjeKDJQ28i/9ON8rV9HaqwQveBtsYnHqtWLqg==}
+    peerDependencies:
+      react: ^16.5.1 || ^17.0.0 || ^18.0.0
+    dependencies:
+      react: 18.2.0
+    dev: false
 
   /merge2/1.4.1:
     resolution: {integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==}
