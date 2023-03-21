@@ -3,6 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@chakra-ui/cli': ^2.3.0
   '@chakra-ui/react': ^2.5.2
+  '@chakra-ui/styled-system': ^2.6.2
   '@emotion/react': ^11.10.6
   '@emotion/styled': ^11.10.6
   '@prisma/client': ^4.9.0
@@ -53,6 +54,7 @@ dependencies:
 
 devDependencies:
   '@chakra-ui/cli': 2.3.0_cbfmry4sbbh4vatmdrsmatfg5a
+  '@chakra-ui/styled-system': 2.6.2
   '@types/eslint': 8.21.3
   '@types/node': 18.15.3
   '@types/react': 18.0.28
@@ -940,7 +942,6 @@ packages:
 
   /@chakra-ui/shared-utils/2.0.5:
     resolution: {integrity: sha512-4/Wur0FqDov7Y0nCXl7HbHzCg4aq86h+SXdoUeuCMD3dSj7dpsVnStLYhng1vxvlbUnLpdF4oz5Myt3i/a7N3Q==}
-    dev: false
 
   /@chakra-ui/skeleton/2.0.24_vnxkkotftpvd7ci6s2qlbwplcq:
     resolution: {integrity: sha512-1jXtVKcl/jpbrJlc/TyMsFyI651GTXY5ma30kWyTXoby2E+cxbV6OR8GB/NMZdGxbQBax8/VdtYVjI0n+OBqWA==}
@@ -1005,7 +1006,6 @@ packages:
       '@chakra-ui/shared-utils': 2.0.5
       csstype: 3.1.1
       lodash.mergewith: 4.6.2
-    dev: false
 
   /@chakra-ui/switch/2.0.23_rawzwe4i2ljvx2s7xjlprtwedu:
     resolution: {integrity: sha512-qC4XbuYXfiD4uinbfLqa/H6Jju5z3DID9PeZXDJtgDlmSWtbyiJQTsntOJWu8OazQRDRv/44YhQScY9X2MNaUw==}
@@ -4020,7 +4020,6 @@ packages:
 
   /lodash.mergewith/4.6.2:
     resolution: {integrity: sha512-GK3g5RPZWTRSeLSpgP8Xhra+pnjBC56q9FZYe1d5RN3TJ35dbkGy3YqBSMbyCrlbi+CM9Z3Jk5yTL7RCsqboyQ==}
-    dev: false
 
   /lodash.throttle/4.1.1:
     resolution: {integrity: sha512-wIkUCfVKpVsWo3JSZlc+8MB5it+2AN5W8J7YVMST30UrvcQNZ1Okbj+rbVniijTWE6FGYy4XJq/rHkas8qJMLQ==}
