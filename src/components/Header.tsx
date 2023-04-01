@@ -7,23 +7,19 @@ import {
   useColorMode,
 } from "@chakra-ui/react";
 import { Menu, Search, Sun, Moon, Settings } from "lucide-react";
-import { useAtom } from "jotai";
 
-import { drawerAtom } from "~/pages/_app";
+interface Props {
+  onSidebarToggle: () => void;
+}
 
-function Header() {
+function Header({ onSidebarToggle }: Props) {
   const { colorMode, toggleColorMode } = useColorMode();
-  const [, setIsDrawerOpen] = useAtom(drawerAtom);
-
-  function handleToggleDrawer() {
-    setIsDrawerOpen((prevState) => !prevState);
-  }
 
   return (
     <Flex justifyContent="space-between" data-test="header">
       <Flex data-test="header-left-side">
         <IconButton
-          onClick={handleToggleDrawer}
+          onClick={onSidebarToggle}
           aria-label="Toggle sidebar"
           icon={<Menu />}
           backgroundColor="transparent"
@@ -42,7 +38,11 @@ function Header() {
           icon={colorMode === "dark" ? <Moon /> : <Sun />}
           backgroundColor="transparent"
         />
-        <IconButton aria-label="Open settings" icon={<Settings />} backgroundColor="transparent" />
+        <IconButton
+          aria-label="Open settings"
+          icon={<Settings />}
+          backgroundColor="transparent"
+        />
       </Flex>
     </Flex>
   );
