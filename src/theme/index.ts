@@ -3,6 +3,20 @@ import { extendTheme, type ThemeConfig } from "@chakra-ui/react";
 import { globalStyles as styles } from "./styles";
 
 const tokensDark = {
+  primary: {
+    0: "#ffffff",
+    10: "#ffffff",
+    50: "#ffffff",
+    100: "#d3d4de",
+    200: "#a6a9be",
+    300: "#7a7f9d",
+    400: "#4d547d",
+    500: "#21295c",
+    600: "#191F45",
+    700: "#141937",
+    800: "#0d1025",
+    900: "#070812",
+  },
   neutral: {
     0: "#ffffff",
     10: "#f6f6f6",
@@ -18,21 +32,7 @@ const tokensDark = {
     900: "#141414",
     1000: "#000000",
   },
-  primary: {
-    0: "#ffffff",
-    10: "#ffffff",
-    50: "#ffffff",
-    100: "#d3d4de",
-    200: "#a6a9be",
-    300: "#7a7f9d",
-    400: "#4d547d",
-    500: "#21295c",
-    600: "#191F45",
-    700: "#141937",
-    800: "#0d1025",
-    900: "#070812",
-  },
-  secondary: {
+  accent: {
     0: "#ffffff",
     10: "#ffffff",
     50: "#f0f0f0",
@@ -49,6 +49,20 @@ const tokensDark = {
 } as const;
 
 const tokensLight = {
+  primary: {
+    0: "#ffffff",
+    10: "#ffffff",
+    50: "#ffffff",
+    100: "#070812",
+    200: "#0d1025",
+    300: "#141937",
+    400: "#191F45",
+    500: "#21295c",
+    600: "#4d547d",
+    700: "#7a7f9d",
+    800: "#a6a9be",
+    900: "#d3d4de",
+  },
   neutral: {
     0: "#000000",
     10: "#141414",
@@ -64,21 +78,7 @@ const tokensLight = {
     900: "#ffffff",
     1000: "#ffffff",
   },
-  primary: {
-    0: "#ffffff",
-    10: "#ffffff",
-    50: "#ffffff",
-    100: "#070812",
-    200: "#0d1025",
-    300: "#141937",
-    400: "#191F45",
-    500: "#21295c",
-    600: "#4d547d",
-    700: "#7a7f9d",
-    800: "#a6a9be",
-    900: "#d3d4de",
-  },
-  secondary: {
+  accent: {
     0: "#ffffff",
     10: "#ffffff",
     50: "#332a14",
@@ -163,7 +163,29 @@ const fonts = {
 const theme = extendTheme({
   config,
   semanticTokens: {
-    colors: colorsSemanticTokens,
+    colors: {
+      ...colorsSemanticTokens,
+      "primary-emphasis": {
+        _light: tokensDark.neutral[50],
+        _dark: tokensDark.primary[400],
+      },
+      "accent-emphasis": {
+        _light: tokensDark.accent[600],
+        _dark: tokensDark.accent[300],
+      },
+      "accent-subtle": {
+        _light: tokensDark.accent[700],
+        _dark: tokensDark.accent[400],
+      },
+      "neutral-emphasis": {
+        _light: tokensDark.primary[500],
+        _dark: tokensDark.neutral[500],
+      },
+      "background-emphasis": {
+        _light: tokensDark.neutral[50],
+        _dark: tokensDark.primary[500],
+      },
+    },
   },
   fonts,
   styles,
