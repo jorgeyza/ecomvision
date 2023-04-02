@@ -33,12 +33,7 @@ import { Settings } from "lucide-react";
 
 import profileImage from "~/assets/profile_image.jpg";
 import NextImage from "next/image";
-
-interface User {
-  id: string;
-  name: string;
-  occupation: string;
-}
+import { type User } from "./layout";
 
 interface Props {
   isOpen: boolean;
@@ -141,102 +136,104 @@ const Sidebar = ({ isOpen, onToggle, user }: Props) => {
       visibility={isOpen ? "visible" : "hidden"}
       data-test="sidebar"
     >
-      <Flex
-        justifyContent="center"
-        alignItems="center"
-        color="accent-400"
-        columnGap="0.5rem"
-        marginTop={6}
-      >
-        <Heading color="accent-emphasis" as="h4" size="md" fontWeight="bold">
-          ECOMVISION
-        </Heading>
-        <IconButton
-          display={{ base: "inline-flex", md: "none" }}
-          color="white"
-          backgroundColor="transparent"
-          aria-label="close-drawer"
-          onClick={onToggle}
+      <div data-test="side-bar-top">
+        <Flex
+          justifyContent="center"
+          alignItems="center"
+          color="accent-400"
+          columnGap="0.5rem"
+          marginTop={6}
         >
-          <ChevronLeft />
-        </IconButton>
-      </Flex>
+          <Heading color="accent-emphasis" as="h4" size="md" fontWeight="bold">
+            ECOMVISION
+          </Heading>
+          <IconButton
+            display={{ base: "inline-flex", md: "none" }}
+            color="white"
+            backgroundColor="transparent"
+            aria-label="close-drawer"
+            onClick={onToggle}
+          >
+            <ChevronLeft />
+          </IconButton>
+        </Flex>
 
-      <nav>
-        <List marginY={12}>
-          {navItems.map(({ label, icon }) => {
-            if (!icon) {
+        <nav>
+          <List marginY={12}>
+            {navItems.map(({ label, icon }) => {
+              if (!icon) {
+                return (
+                  <Text
+                    as="h4"
+                    fontWeight="bold"
+                    paddingX={4}
+                    paddingY={2}
+                    key={label}
+                    marginTop={9}
+                    marginLeft={4}
+                  >
+                    {label}
+                  </Text>
+                );
+              }
+              const lowcaseLabel = label.toLowerCase();
+
               return (
-                <Text
-                  as="h4"
-                  fontWeight="bold"
-                  paddingX={4}
-                  paddingY={2}
+                <ListItem
                   key={label}
-                  marginTop={9}
-                  marginLeft={4}
-                >
-                  {label}
-                </Text>
-              );
-            }
-            const lowcaseLabel = label.toLowerCase();
-
-            return (
-              <ListItem
-                key={label}
-                backgroundColor={
-                  active === lowcaseLabel ? "accent-300" : "transparent"
-                }
-                _hover={{
-                  backgroundColor:
-                    active === lowcaseLabel
-                      ? "accent-400"
-                      : hoverBackgroundColor,
-                }}
-                color={active === lowcaseLabel ? "primary-600" : "accent-100"}
-              >
-                <Link
-                  as={NextLink}
-                  display="flex"
-                  alignItems="center"
-                  width="100%"
-                  paddingX={4}
-                  paddingY={2}
-                  columnGap={4}
+                  backgroundColor={
+                    active === lowcaseLabel ? "accent-300" : "transparent"
+                  }
                   _hover={{
-                    textDecoration: "none",
+                    backgroundColor:
+                      active === lowcaseLabel
+                        ? "accent-400"
+                        : hoverBackgroundColor,
                   }}
-                  href={`/${lowcaseLabel}`}
-                  onClick={() => handleOnClickLink(lowcaseLabel)}
+                  color={active === lowcaseLabel ? "primary-600" : "accent-100"}
                 >
-                  <ListIcon
-                    marginLeft={8}
-                    color={
-                      active === lowcaseLabel ? "primary-600" : "accent-200"
-                    }
-                  >
-                    {icon}
-                  </ListIcon>
-                  <Flex
+                  <Link
+                    as={NextLink}
+                    display="flex"
                     alignItems="center"
-                    justifyContent="space-between"
                     width="100%"
+                    paddingX={4}
+                    paddingY={2}
+                    columnGap={4}
+                    _hover={{
+                      textDecoration: "none",
+                    }}
+                    href={`/${lowcaseLabel}`}
+                    onClick={() => handleOnClickLink(lowcaseLabel)}
                   >
-                    <Text fontSize="sm">{label}</Text>
-                    {active === lowcaseLabel && <ChevronRight size={16} />}
-                  </Flex>
-                </Link>
-              </ListItem>
-            );
-          })}
-        </List>
-      </nav>
+                    <ListIcon
+                      marginLeft={8}
+                      color={
+                        active === lowcaseLabel ? "primary-600" : "accent-200"
+                      }
+                    >
+                      {icon}
+                    </ListIcon>
+                    <Flex
+                      alignItems="center"
+                      justifyContent="space-between"
+                      width="100%"
+                    >
+                      <Text fontSize="sm">{label}</Text>
+                      {active === lowcaseLabel && <ChevronRight size={16} />}
+                    </Flex>
+                  </Link>
+                </ListItem>
+              );
+            })}
+          </List>
+        </nav>
+      </div>
       <Flex
         flexDirection="column"
         alignItems="center"
         color="accent-300"
-        bottom="2rem"
+        data-test="side-bar-bottom"
       >
         <Divider />
         <Flex alignItems="center" columnGap={4} marginY={8}>
@@ -256,10 +253,10 @@ const Sidebar = ({ isOpen, onToggle, user }: Props) => {
           </Box>
           <div>
             <Text color="accent-100" fontWeight="bold" fontSize="small">
-              {user?.name ?? "usersomtheing"}
+              {user?.name}
             </Text>
             <Text color="accent-200" fontSize="smaller">
-              {user?.occupation ?? "usersomtheing"}
+              {user?.occupation}
             </Text>
           </div>
           <Settings size={24} />
