@@ -12,6 +12,7 @@ import {
   Link,
   Box,
   Divider,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import {
   Home,
@@ -107,6 +108,10 @@ const navItems = [
 const Sidebar = ({ isOpen, onToggle, user }: Props) => {
   const router = useRouter();
   const currentPath = router.asPath;
+  const hoverBackgroundColor = useColorModeValue(
+    "blackAlpha.200",
+    "whiteAlpha.200"
+  );
 
   const [active, setActive] = useState("");
 
@@ -185,7 +190,9 @@ const Sidebar = ({ isOpen, onToggle, user }: Props) => {
                 }
                 _hover={{
                   backgroundColor:
-                    active === lowcaseLabel ? "accent-100" : "whiteAlpha.200",
+                    active === lowcaseLabel
+                      ? "accent-400"
+                      : hoverBackgroundColor,
                 }}
                 color={active === lowcaseLabel ? "primary-600" : "accent-100"}
               >
