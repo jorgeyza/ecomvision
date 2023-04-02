@@ -5,14 +5,14 @@ export const globalStyles = {
       width: "8px",
     },
     "::-webkit-scrollbar-thumb": {
-      background: "#888",
+      background: "#4d547d",
       borderRadius: "8px",
     },
     "::-webkit-scrollbar-thumb:hover": {
       background: "#555",
     },
     "::-webkit-scrollbar-track": {
-      background: "#f1f1f1",
+      background: "#7a7f9d",
       borderRadius: "8px",
     },
     html: {
