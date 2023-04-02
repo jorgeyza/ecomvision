@@ -10,6 +10,8 @@ import {
   ListItem,
   Text,
   Link,
+  Box,
+  Divider,
 } from "@chakra-ui/react";
 import {
   Home,
@@ -26,10 +28,21 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
+import { Settings } from "lucide-react";
+
+import profileImage from "~/assets/profile_image.jpg";
+import NextImage from "next/image";
+
+interface User {
+  id: string;
+  name: string;
+  occupation: string;
+}
 
 interface Props {
   isOpen: boolean;
   onToggle: () => void;
+  user: User;
 }
 
 const navItems = [
@@ -91,7 +104,7 @@ const navItems = [
   },
 ];
 
-const Sidebar = ({ isOpen, onToggle }: Props) => {
+const Sidebar = ({ isOpen, onToggle, user }: Props) => {
   const router = useRouter();
   const currentPath = router.asPath;
 
@@ -105,6 +118,7 @@ const Sidebar = ({ isOpen, onToggle }: Props) => {
       as="aside"
       direction="column"
       overflowX="hidden"
+      justifyContent="space-between"
       w={0}
       minW={{ base: isOpen ? "100vw" : 0, sm: isOpen ? 250 : 0 }}
       h="100vh"
@@ -138,49 +152,109 @@ const Sidebar = ({ isOpen, onToggle }: Props) => {
         </IconButton>
       </Flex>
 
-      <List marginTop={12}>
-        {navItems.map(({ label, icon }) => {
-          if (!icon) {
-            return (
-              <Text key={label} marginTop={9}>
-                {label}
-              </Text>
-            );
-          }
-          const lowcaseLabel = label.toLowerCase();
+      <nav>
+        <List marginY={12}>
+          {navItems.map(({ label, icon }) => {
+            if (!icon) {
+              return (
+                <Text
+                  as="h4"
+                  fontWeight="bold"
+                  paddingX={4}
+                  paddingY={2}
+                  key={label}
+                  marginTop={9}
+                  marginLeft={4}
+                >
+                  {label}
+                </Text>
+              );
+            }
+            const lowcaseLabel = label.toLowerCase();
 
-          return (
-            <ListItem key={label}>
-              <Link
-                as={NextLink}
-                display="flex"
-                alignItems="center"
+            return (
+              <ListItem
+                key={label}
                 backgroundColor={
                   active === lowcaseLabel ? "accent-300" : "transparent"
                 }
-                color={active === lowcaseLabel ? "primary-600" : "accent-100"}
                 _hover={{
-                  textDecoration: "none",
-                  backgroundColor: "whiteAlpha.200",
+                  backgroundColor:
+                    active === lowcaseLabel ? "accent-100" : "whiteAlpha.200",
                 }}
-                href={`/${lowcaseLabel}`}
-                onClick={() => {
-                  setActive(lowcaseLabel);
-                }}
+                color={active === lowcaseLabel ? "primary-600" : "accent-100"}
               >
-                <ListIcon
-                  ml="2rem"
-                  color={active === lowcaseLabel ? "primary-600" : "accent-200"}
+                <Link
+                  as={NextLink}
+                  display="flex"
+                  alignItems="center"
+                  width="100%"
+                  paddingX={4}
+                  paddingY={2}
+                  columnGap={4}
+                  _hover={{
+                    textDecoration: "none",
+                  }}
+                  href={`/${lowcaseLabel}`}
+                  onClick={() => {
+                    setActive(lowcaseLabel);
+                  }}
                 >
-                  {icon}
-                </ListIcon>
-                <Text>{label}</Text>
-                {active === lowcaseLabel && <ChevronRight />}
-              </Link>
-            </ListItem>
-          );
-        })}
-      </List>
+                  <ListIcon
+                    marginLeft={8}
+                    color={
+                      active === lowcaseLabel ? "primary-600" : "accent-200"
+                    }
+                  >
+                    {icon}
+                  </ListIcon>
+                  <Flex
+                    alignItems="center"
+                    justifyContent="space-between"
+                    width="100%"
+                  >
+                    <Text fontSize="sm">{label}</Text>
+                    {active === lowcaseLabel && <ChevronRight size={16} />}
+                  </Flex>
+                </Link>
+              </ListItem>
+            );
+          })}
+        </List>
+      </nav>
+      <Flex
+        flexDirection="column"
+        alignItems="center"
+        color="accent-300"
+        bottom="2rem"
+      >
+        <Divider />
+        <Flex alignItems="center" columnGap={4} marginY={8}>
+          <Box
+            position="relative"
+            overflow="hidden"
+            width="40px"
+            height="40px"
+            borderRadius="50%"
+          >
+            <NextImage
+              alt="profile"
+              style={{ objectFit: "cover" }}
+              fill
+              src={profileImage}
+            />
+          </Box>
+          <div>
+            <Text color="accent-100" fontWeight="bold" fontSize="small">
+              {user?.name ?? "usersomtheing"}
+            </Text>
+            <Text color="accent-200" fontSize="smaller">
+              {user?.occupation ?? "usersomtheing"}
+            </Text>
+          </div>
+          <Settings size={24} />
+        </Flex>
+      </Flex>
     </Flex>
   );
 };
