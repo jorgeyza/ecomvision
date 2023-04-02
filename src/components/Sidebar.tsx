@@ -110,9 +110,15 @@ const Sidebar = ({ isOpen, onToggle, user }: Props) => {
 
   const [active, setActive] = useState("");
 
+  function handleOnClickLink(lowcaseLabel: string) {
+    setActive(lowcaseLabel);
+    onToggle();
+  }
+
   useEffect(() => {
     setActive(currentPath.substring(1));
   }, [currentPath]);
+
   return (
     <Flex
       as="aside"
@@ -124,7 +130,6 @@ const Sidebar = ({ isOpen, onToggle, user }: Props) => {
       h="100vh"
       color="accent-200"
       backgroundColor="background-emphasis"
-      borderRight="1px solid"
       transition="all .5s cubic-bezier(0.820, 0.085, 0.395, 0.895)"
       transform="auto"
       translateX={isOpen ? "0%" : "-100%"}
@@ -196,9 +201,7 @@ const Sidebar = ({ isOpen, onToggle, user }: Props) => {
                     textDecoration: "none",
                   }}
                   href={`/${lowcaseLabel}`}
-                  onClick={() => {
-                    setActive(lowcaseLabel);
-                  }}
+                  onClick={() => handleOnClickLink(lowcaseLabel)}
                 >
                   <ListIcon
                     marginLeft={8}
