@@ -3,6 +3,12 @@ import { Flex, useDisclosure } from "@chakra-ui/react";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 
+export interface User {
+  id: string;
+  name: string;
+  occupation: string;
+}
+
 interface Props {
   children: React.ReactNode;
   className: string;
@@ -15,11 +21,14 @@ const DUMMY_USER = {
 };
 
 const Layout = ({ children, className }: Props) => {
-  const { isOpen: isSidebarOpen, onToggle: onToggleSideBar } = useDisclosure();
+  const { isOpen: isSidebarOpen, onToggle: onToggleSideBar } = useDisclosure({
+    defaultIsOpen: true,
+  });
 
   return (
     <Flex
       className={className}
+      backgroundColor="primary-600"
       overflowX={isSidebarOpen ? "hidden" : undefined}
       data-test="app-layout"
     >
@@ -29,7 +38,7 @@ const Layout = ({ children, className }: Props) => {
         user={DUMMY_USER}
       />
       <Flex direction="column" w="full" maxH="100vh" data-test="right-side">
-        <Header onSidebarToggle={onToggleSideBar} />
+        <Header onSidebarToggle={onToggleSideBar} user={DUMMY_USER} />
         <Flex
           as="main"
           align="flex-start"
