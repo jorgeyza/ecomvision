@@ -6,7 +6,7 @@ import {
   dataTransaction,
   dataAffiliateStat,
   dataUser,
-} from "./seedData.js";
+} from "./seedData.json";
 
 const prisma = new PrismaClient();
 

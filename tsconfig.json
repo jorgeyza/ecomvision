@@ -27,8 +27,7 @@
     "**/*.ts",
     "**/*.tsx",
     "**/*.cjs",
-    "**/*.mjs",
-    "prisma/seedData.js"
+    "**/*.mjs"
   ],
   "exclude": ["node_modules"]
 }
