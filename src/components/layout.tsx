@@ -1,6 +1,6 @@
 import { Flex, useDisclosure } from "@chakra-ui/react";
 
-import Header from "./Header";
+import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 
 export interface User {
@@ -28,7 +28,7 @@ const Layout = ({ children, className }: Props) => {
   return (
     <Flex
       className={className}
-      backgroundColor="primary-600"
+      backgroundColor="background"
       overflowX={isSidebarOpen ? "hidden" : undefined}
       data-test="app-layout"
     >
@@ -38,7 +38,7 @@ const Layout = ({ children, className }: Props) => {
         user={DUMMY_USER}
       />
       <Flex direction="column" w="full" maxH="100vh" data-test="right-side">
-        <Header onSidebarToggle={onToggleSideBar} user={DUMMY_USER} />
+        <Navbar onSidebarToggle={onToggleSideBar} user={DUMMY_USER} />
         <Flex
           as="main"
           align="flex-start"
