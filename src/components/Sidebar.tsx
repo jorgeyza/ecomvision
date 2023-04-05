@@ -13,6 +13,7 @@ import {
   Box,
   Divider,
   useColorModeValue,
+  useMediaQuery,
 } from "@chakra-ui/react";
 import {
   Home,
@@ -103,6 +104,7 @@ const navItems = [
 const Sidebar = ({ isOpen, onToggle, user }: Props) => {
   const router = useRouter();
   const currentPath = router.asPath;
+  const [isSmallerOrEqualTo768] = useMediaQuery("(max-width: 768px)");
   const hoverBackgroundColor = useColorModeValue(
     "blackAlpha.200",
     "whiteAlpha.200"
@@ -112,7 +114,7 @@ const Sidebar = ({ isOpen, onToggle, user }: Props) => {
 
   function handleOnClickLink(lowcaseLabel: string) {
     setActive(lowcaseLabel);
-    onToggle();
+    if (isSmallerOrEqualTo768) onToggle();
   }
 
   useEffect(() => {
