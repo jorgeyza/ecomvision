@@ -1,10 +1,10 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, type RoleEnum } from "@prisma/client";
 import {
-  dataAffiliateStat,
   dataOverallStat,
   dataProduct,
   dataProductStat,
   dataTransaction,
+  dataAffiliateStat,
   dataUser,
 } from "./seedData.js";
 
@@ -15,37 +15,51 @@ async function main() {
     await prisma.$transaction(
       async (tx) => {
         // Delete all existing records
-        await tx.affiliateStat.deleteMany();
         await tx.overallStats.deleteMany();
-        await tx.product.deleteMany();
         await tx.productStat.deleteMany();
+        await tx.product.deleteMany();
         await tx.transaction.deleteMany();
+        await tx.affiliateStat.deleteMany();
         await tx.user.deleteMany();
 
         // Create new records
-        const affiliateStats = await tx.affiliateStat.createMany({
-          data: dataAffiliateStat,
-        });
-        const overallStats = await tx.overallStats.createMany({
-          data: dataOverallStat,
-        });
-        const products = await tx.product.createMany({
-          data: dataProduct,
-        });
-        const productStats = await tx.productStat.createMany({
-          data: dataProductStat,
-        });
-        const transactions = await tx.transaction.createMany({
-          data: dataTransaction,
-        });
-        const users = await tx.user.createMany({ data: dataUser });
+        await tx.overallStats.createMany({ data: dataOverallStat });
+        await tx.product.createMany({ data: dataProduct });
+        await tx.productStat.createMany({ data: dataProductStat });
+        for (const user of dataUser) {
+          await tx.user.create({
+            data: {
+              ...user,
+              role: user.role as RoleEnum,
+            },
+          });
+        }
+        // Create transactions
+        await tx.transaction.createMany({ data: dataTransaction });
 
-        console.log(`Created ${affiliateStats.count} affiliateStats`);
-        console.log(`Created ${overallStats.count} overallStats`);
-        console.log(`Created ${products.count} products`);
-        console.log(`Created ${productStats.count} productStats`);
-        console.log(`Created ${transactions.count} transactions`);
-        console.log(`Created ${users.count} users`);
+        // Create affiliate stats and connect them to the users
+        for (const affiliateStatData of dataAffiliateStat) {
+          await tx.affiliateStat.create({
+            data: {
+              id: affiliateStatData.id,
+              affiliateSales: {
+                connect: affiliateStatData.affiliateSales.map(
+                  (transactionId) => ({
+                    id: transactionId,
+                  })
+                ),
+              },
+              user: { connect: { id: affiliateStatData.userId } },
+            },
+          });
+        }
+
+        console.log(`Created ${dataAffiliateStat.length} affiliateStats`);
+        console.log(`Created ${dataOverallStat.length} overallStats`);
+        console.log(`Created ${dataProduct.length} products`);
+        console.log(`Created ${dataProductStat.length} productStats`);
+        console.log(`Created ${dataTransaction.length} transactions`);
+        console.log(`Created ${dataUser.length} users`);
       },
       {
         timeout: 30000,
