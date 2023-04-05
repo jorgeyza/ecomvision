@@ -185,6 +185,10 @@ const theme = extendTheme({
         _light: tokensDark.neutral[50],
         _dark: tokensDark.primary[500],
       },
+      background: {
+        _light: tokensDark.neutral[0],
+        _dark: tokensDark.primary[600],
+      },
     },
   },
   fonts,
