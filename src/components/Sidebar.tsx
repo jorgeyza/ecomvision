@@ -250,6 +250,7 @@ const Sidebar = ({ isOpen, onToggle, user }: Props) => {
               alt="profile"
               style={{ objectFit: "cover" }}
               fill
+              sizes="40px"
               src={profileImage}
             />
           </Box>

@@ -94,6 +94,7 @@ function Navbar({ onSidebarToggle, user }: Props) {
                   alt="profile"
                   style={{ objectFit: "cover" }}
                   fill
+                  sizes="32px"
                   src={profileImage}
                 />
               </Box>
