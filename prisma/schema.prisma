@@ -27,12 +27,12 @@ model Product {
     id          String        @id @default(auto()) @map("_id") @db.ObjectId
     createdAt   DateTime      @default(now())
     updatedAt   DateTime      @updatedAt
-    name        String?
-    price       Float?
-    description String?
-    category    String?
-    rating      Float?
-    supply      Int?
+    name        String
+    price       Float
+    description String
+    category    String
+    rating      Float
+    supply      Int
     productStat ProductStat[]
 }
 
@@ -42,9 +42,9 @@ model ProductStat {
     updatedAt            DateTime      @updatedAt
     product              Product       @relation(fields: [productId], references: [id])
     productId            String        @db.ObjectId
-    yearlySalesTotal     Int?
-    yearlyTotalSoldUnits Int?
-    year                 Int?
+    yearlySalesTotal     Int
+    yearlyTotalSoldUnits Int
+    year                 Int
     monthlyData          MonthlyData[]
     dailyData            DailyData[]
 }
