@@ -62,7 +62,7 @@ async function main() {
         console.log(`Created ${dataUser.length} users`);
       },
       {
-        timeout: 30000,
+        timeout: 120000,
       }
     );
   } catch (error) {
