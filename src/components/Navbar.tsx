@@ -31,7 +31,7 @@ interface Props {
   user: User;
 }
 
-function Header({ onSidebarToggle, user }: Props) {
+function Navbar({ onSidebarToggle, user }: Props) {
   const { colorMode, toggleColorMode } = useColorMode();
 
   return (
@@ -41,9 +41,9 @@ function Header({ onSidebarToggle, user }: Props) {
       justifyContent="space-between"
       alignItems="center"
       paddingX={6}
-      data-test="header"
+      data-test="navbar"
     >
-      <Flex data-test="header-left-side" alignItems="center" columnGap={2}>
+      <Flex data-test="navbar-left-side" alignItems="center" columnGap={2}>
         <IconButton
           onClick={onSidebarToggle}
           aria-label="Toggle sidebar"
@@ -62,7 +62,7 @@ function Header({ onSidebarToggle, user }: Props) {
           </InputRightElement>
         </InputGroup>
       </Flex>
-      <Flex columnGap={6} data-test="header-right-side" alignItems="center">
+      <Flex columnGap={6} data-test="navbar-right-side" alignItems="center">
         <IconButton
           onClick={toggleColorMode}
           aria-label="Toggle app color theme"
@@ -97,11 +97,11 @@ function Header({ onSidebarToggle, user }: Props) {
                   src={profileImage}
                 />
               </Box>
-              <Flex flexDirection="column" alignItems="start">
+              <Flex flexDirection="column" alignItems="start" rowGap={1}>
                 <Text color="accent-100" fontWeight="bold" fontSize="small">
                   {user?.name}
                 </Text>
-                <Text color="accent-200" fontWeight="normal" fontSize="smaller">
+                <Text color="accent-200" fontWeight="normal" fontSize="xs">
                   {user?.occupation}
                 </Text>
               </Flex>
@@ -116,4 +116,4 @@ function Header({ onSidebarToggle, user }: Props) {
   );
 }
 
-export default Header;
+export default Navbar;
