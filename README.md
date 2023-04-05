@@ -1,10 +1,14 @@
 # Ecomvision
 
+![Vercel](https://therealsujitk-vercel-badge.vercel.app/?app=ecomvision)
+
 This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`. Design by [EdRoh](https://www.youtube.com/@EdRohDev)
 
 If you use a local MongoDB replica set, remember to first seed your database `pnpm prisma db seed`
 
-To start project use `pnpm dev`.
+Web app for data visualization with a dashboard, tables and graphics generated with Nivo Charts.
+
+To start project use `pnpm dev`. You can see the [live application here](https://ecomvision.jorgeyza.com)
 
 ## Docker
 
@@ -13,7 +17,7 @@ You can use `docker-compose up` to run a local docker container that has a Mongo
 ## Envs
 
 - DATABASE_URL => A MongoDB database url (Needs to be a replica set).
-- DATABASE_URL_DEV => A MongoDB databasase url (Needs to be a replica set). Used for local development. (Remember to replace the environment in `schema.prisma` if you want to use )
+- DATABASE_URL_DEV => The DATABASE_URL env you need if you decide to use the provided docker-compose file.
 
 ## Stack
 
