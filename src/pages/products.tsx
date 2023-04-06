@@ -1,19 +1,25 @@
 import {
+  Button,
   Card,
   CardBody,
   CardFooter,
   CardHeader,
+  Collapse,
   Flex,
   Grid,
   GridItem,
-  Heading,
+  Stat,
+  StatLabel,
+  StatNumber,
   Text,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { type NextPage } from "next";
 import Head from "next/head";
-import Loading from "~/components/ui/Loading";
 
+import Loading from "~/components/ui/Loading";
 import PageHeadings from "~/components/ui/PageHeadings";
+
 import { api } from "~/utils/api";
 
 interface ProductCardProps {
@@ -55,7 +61,11 @@ const Products: NextPage = () => {
           <Grid templateColumns="repeat(4, minmax(0px, 1fr))" gap={5}>
             {allProducts?.map((product) => {
               return (
-                <GridItem key={product.id} width="100%">
+                <GridItem
+                  key={product.id}
+                  width="100%"
+                  colSpan={{ base: 4, md: 2, lg: 1 }}
+                >
                   <ProductCard
                     id={product.id}
                     name={product.name}
@@ -86,19 +96,68 @@ function ProductCard({
   supply,
   stat,
 }: ProductCardProps) {
+  const { isOpen, onToggle } = useDisclosure();
   return (
     <Card backgroundColor="background-emphasis">
       <CardHeader>
-        <Text>{category}</Text>
-        <Heading as="h6" size="xs">
-          {name}
-        </Heading>
-        <Text>{price}</Text>
+        <Text color="accent-700" fontSize="sm">
+          {category}
+        </Text>
+        <Stat>
+          <StatLabel marginTop={1} fontWeight="bold">
+            {name}
+          </StatLabel>
+          <StatNumber color="accent-400" fontSize="sm">
+            ${Number(price).toFixed(2)}
+          </StatNumber>
+        </Stat>
       </CardHeader>
-      <CardBody>
-        <Text>View a summary of all your customers over the last month.</Text>
+      <CardBody display="flex" flexDirection="column" rowGap={1}>
+        <Text fontSize="xs">
+          Rating: <strong>{rating}</strong>
+        </Text>
+        <Text fontSize="xs" minHeight={63}>
+          {description}
+        </Text>
       </CardBody>
-      <CardFooter>lalala</CardFooter>
+      <CardFooter flexDirection="column">
+        <Button size="sm" onClick={onToggle}>
+          SHOW MORE
+        </Button>
+        <Collapse in={isOpen} animateOpacity>
+          <Flex
+            marginTop={3}
+            flexDirection="column"
+            rowGap={1}
+            color="neutral-300"
+          >
+            <Text fontSize="xs">
+              <Text as="span" fontWeight="bold" color="neutral-100">
+                id:
+              </Text>{" "}
+              {id}
+            </Text>
+            <Text fontSize="xs">
+              <Text as="span" fontWeight="bold" color="neutral-100">
+                Supply Left:
+              </Text>{" "}
+              {supply}
+            </Text>
+            <Text fontSize="xs">
+              <Text as="span" fontWeight="bold" color="neutral-100">
+                Yearly Sales This Year:
+              </Text>{" "}
+              {stat?.yearlySalesTotal}
+            </Text>
+            <Text fontSize="xs">
+              <Text as="span" fontWeight="bold" color="neutral-100">
+                Yearly Units Sold This Year:
+              </Text>{" "}
+              {stat?.yearlyTotalSoldUnits}
+            </Text>
+          </Flex>
+        </Collapse>
+      </CardFooter>
     </Card>
   );
 }
