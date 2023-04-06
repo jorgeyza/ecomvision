@@ -45,8 +45,8 @@ const Layout = ({ children, className }: Props) => {
           direction="column"
           flexGrow={1}
           rowGap={4}
-          // maxW={isSidebarOpen ? "calc(100vw - 250px)" : "100vw"}
-          maxH="calc(100vh - 40px)"
+          overflow="auto"
+          maxH="calc(100vh - 56px)"
           p={6}
           data-test="main-container"
         >
