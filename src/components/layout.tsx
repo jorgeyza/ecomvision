@@ -47,6 +47,7 @@ const Layout = ({ children, className }: Props) => {
           rowGap={4}
           overflow="auto"
           maxH="calc(100vh - 56px)"
+          maxW={isSidebarOpen ? "calc(100vw - 250px)" : "100vw"}
           p={6}
           data-test="main-container"
         >
