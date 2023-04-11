@@ -169,6 +169,10 @@ const theme = extendTheme({
         _light: tokensDark.neutral[50],
         _dark: tokensDark.primary[400],
       },
+      "primary-subtle": {
+        _light: tokensDark.neutral[100],
+        _dark: tokensDark.primary[400],
+      },
       "accent-emphasis": {
         _light: tokensDark.accent[600],
         _dark: tokensDark.accent[300],
