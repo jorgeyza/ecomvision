@@ -12,6 +12,7 @@ import {
   Popover,
   PopoverBody,
   PopoverContent,
+  Select,
   Switch,
   Table,
   TableContainer,
@@ -25,7 +26,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { type NextPage } from "next";
-import { type ReactNode, useState } from "react";
+import { useState, type ReactNode } from "react";
 import {
   createColumnHelper,
   flexRender,
@@ -34,6 +35,7 @@ import {
   type SortingState,
   useReactTable,
   type Header,
+  type Table as ReactTable,
 } from "@tanstack/react-table";
 import { ArrowDown, ArrowUp, MoreVertical } from "lucide-react";
 
@@ -79,11 +81,20 @@ const Customers: NextPage = () => {
     error,
   } = api.user.getAllWithUserRole.useQuery();
 
-  const { isOpen, onToggle, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenVisibilityPopover,
+    onToggle: onToggleVisibilityPopover,
+    onClose: onCloseVisibilityPopover,
+  } = useDisclosure();
+
+  const {
+    isOpen: isOpenFilterPopover,
+    onToggle: onToggleFilterPopover,
+    onClose: onCloseFilterPopover,
+  } = useDisclosure();
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState({});
-  const [popoverSearchedColumn, setPopoverSearchedColumn] = useState("");
 
   const table = useReactTable({
     data: allCustomers,
@@ -127,7 +138,8 @@ const Customers: NextPage = () => {
                         <TableColumnHeader
                           key={header.id}
                           header={header}
-                          onToggle={onToggle}
+                          onToggleVisibilityPopover={onToggleVisibilityPopover}
+                          onToggleFilterPopover={onToggleFilterPopover}
                         />
                       ))}
                     </Tr>
@@ -168,73 +180,16 @@ const Customers: NextPage = () => {
                 </Tfoot>
               </Table>
             </TableContainer>
-            <Popover
-              returnFocusOnClose={false}
-              isOpen={isOpen}
-              onClose={onClose}
-              placement="bottom-start"
-              closeOnBlur
-            >
-              <PopoverContent>
-                <PopoverBody
-                  display="flex"
-                  flexDirection="column"
-                  rowGap={3}
-                  textTransform="none"
-                >
-                  <Input
-                    placeholder="Find column"
-                    size="xs"
-                    variant="flushed"
-                    value={popoverSearchedColumn}
-                    onChange={(e) =>
-                      setPopoverSearchedColumn(e.target.value.toLowerCase())
-                    }
-                  />
-                  {table
-                    .getAllLeafColumns()
-                    .filter((column) => {
-                      const columnToBeFiltered = column.columnDef
-                        .header as string;
-                      return columnToBeFiltered
-                        .toLowerCase()
-                        .includes(popoverSearchedColumn);
-                    })
-                    .map((column) => {
-                      return (
-                        <FormControl
-                          key={column.id + "a"}
-                          display="flex"
-                          alignItems="center"
-                          columnGap={2}
-                        >
-                          <Switch
-                            id="email-alerts"
-                            size="sm"
-                            isChecked={column.getIsVisible()}
-                            onChange={column.getToggleVisibilityHandler()}
-                          />
-                          <FormLabel
-                            htmlFor="email-alerts"
-                            marginBottom={0}
-                            fontSize="sm"
-                          >
-                            {column.columnDef.header as ReactNode}
-                          </FormLabel>
-                        </FormControl>
-                      );
-                    })}
-                  <Button
-                    variant="ghost"
-                    size="xs"
-                    color="primary-100"
-                    onClick={table.getToggleAllColumnsVisibilityHandler()}
-                  >
-                    SHOW/HIDE ALL
-                  </Button>
-                </PopoverBody>
-              </PopoverContent>
-            </Popover>
+            <FilterPopover
+              isOpenFilterPopover={isOpenFilterPopover}
+              onCloseFilterPopover={onCloseFilterPopover}
+              table={table}
+            />
+            <VisibilityPopover
+              isOpenVisibilityPopover={isOpenVisibilityPopover}
+              onCloseVisibilityPopover={onCloseVisibilityPopover}
+              table={table}
+            />
           </>
         )}
       </Flex>
@@ -246,10 +201,15 @@ export default Customers;
 
 interface Props {
   header: Header<Customer, unknown>;
-  onToggle: () => void;
+  onToggleVisibilityPopover: () => void;
+  onToggleFilterPopover: () => void;
 }
 
-function TableColumnHeader({ header, onToggle }: Props) {
+function TableColumnHeader({
+  header,
+  onToggleVisibilityPopover,
+  onToggleFilterPopover,
+}: Props) {
   const [isColumnHeaderHovered, setIsColumnHeaderHovered] = useState(false);
 
   return (
@@ -308,15 +268,157 @@ function TableColumnHeader({ header, onToggle }: Props) {
               variant="ghost"
             />
             <MenuList>
-              <MenuItem>Filter</MenuItem>
+              <MenuItem onClick={onToggleFilterPopover}>Filter</MenuItem>
               <MenuItem onClick={header.column.getToggleVisibilityHandler()}>
                 Hide
               </MenuItem>
-              <MenuItem onClick={onToggle}>Show columns</MenuItem>
+              <MenuItem onClick={onToggleVisibilityPopover}>
+                Show columns
+              </MenuItem>
             </MenuList>
           </Menu>
         </Flex>
       )}
     </Th>
+  );
+}
+
+interface FilterPopoverProps {
+  isOpenFilterPopover: boolean;
+  onCloseFilterPopover: () => void;
+  table: ReactTable<Customer>;
+}
+
+function FilterPopover({
+  isOpenFilterPopover,
+  onCloseFilterPopover,
+  table,
+}: FilterPopoverProps) {
+  const [popoverSearchedColumn, setPopoverSearchedColumn] = useState("");
+
+  return (
+    <Popover
+      returnFocusOnClose={false}
+      isOpen={isOpenFilterPopover}
+      onClose={onCloseFilterPopover}
+      placement="bottom-start"
+      closeOnBlur
+    >
+      <PopoverContent>
+        <PopoverBody
+          display="flex"
+          flexDirection="column"
+          rowGap={4}
+          alignItems="end"
+        >
+          <Select size="xs" variant="flushed">
+            {table.getAllLeafColumns().map((column) => {
+              const columnHeader = column.columnDef.header as string;
+              return (
+                <option key={columnHeader} value={columnHeader}>
+                  {columnHeader}
+                </option>
+              );
+            })}
+          </Select>
+          <Select size="xs" variant="flushed">
+            <option value="equals">equals</option>
+            <option value="contains">contains</option>
+          </Select>
+          <Input
+            placeholder="Filter value"
+            size="xs"
+            variant="flushed"
+            value={popoverSearchedColumn}
+            onChange={(e) =>
+              setPopoverSearchedColumn(e.target.value.toLowerCase())
+            }
+          />
+        </PopoverBody>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
+interface VisibilityPopoverProps {
+  isOpenVisibilityPopover: boolean;
+  onCloseVisibilityPopover: () => void;
+  table: ReactTable<Customer>;
+}
+
+function VisibilityPopover({
+  isOpenVisibilityPopover,
+  onCloseVisibilityPopover,
+  table,
+}: VisibilityPopoverProps) {
+  const [popoverSearchedColumn, setPopoverSearchedColumn] = useState("");
+
+  return (
+    <Popover
+      returnFocusOnClose={false}
+      isOpen={isOpenVisibilityPopover}
+      onClose={onCloseVisibilityPopover}
+      placement="bottom-start"
+      closeOnBlur
+    >
+      <PopoverContent>
+        <PopoverBody
+          display="flex"
+          flexDirection="column"
+          rowGap={3}
+          textTransform="none"
+        >
+          <Input
+            placeholder="Find column"
+            size="xs"
+            variant="flushed"
+            value={popoverSearchedColumn}
+            onChange={(e) =>
+              setPopoverSearchedColumn(e.target.value.toLowerCase())
+            }
+          />
+          {table
+            .getAllLeafColumns()
+            .filter((column) => {
+              const columnToBeFiltered = column.columnDef.header as string;
+              return columnToBeFiltered
+                .toLowerCase()
+                .includes(popoverSearchedColumn);
+            })
+            .map((column) => {
+              return (
+                <FormControl
+                  key={column.id}
+                  display="flex"
+                  alignItems="center"
+                  columnGap={2}
+                >
+                  <Switch
+                    id="email-alerts"
+                    size="sm"
+                    isChecked={column.getIsVisible()}
+                    onChange={column.getToggleVisibilityHandler()}
+                  />
+                  <FormLabel
+                    htmlFor="email-alerts"
+                    marginBottom={0}
+                    fontSize="sm"
+                  >
+                    {column.columnDef.header as ReactNode}
+                  </FormLabel>
+                </FormControl>
+              );
+            })}
+          <Button
+            variant="ghost"
+            size="xs"
+            color="primary-100"
+            onClick={table.getToggleAllColumnsVisibilityHandler()}
+          >
+            SHOW / HIDE ALL
+          </Button>
+        </PopoverBody>
+      </PopoverContent>
+    </Popover>
   );
 }
