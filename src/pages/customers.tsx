@@ -38,11 +38,13 @@ import {
   type Table as ReactTable,
 } from "@tanstack/react-table";
 import { ArrowDown, ArrowUp, MoreVertical } from "lucide-react";
+import { useAtom } from "jotai";
 
 import Loading from "~/components/ui/Loading";
 import PageHeadings from "~/components/ui/PageHeadings";
 
 import { type RouterOutputs, api } from "~/utils/api";
+import { selectedTableColumnAtom } from "./_app";
 
 type Customer = RouterOutputs["user"]["getAllWithUserRole"][0];
 
@@ -53,24 +55,24 @@ const columns = [
     header: "ID",
   }),
   columnHelper.accessor("name", {
-    header: "Name",
+    header: "NAME",
   }),
   columnHelper.accessor("email", {
-    header: "Email",
+    header: "EMAIL",
   }),
   columnHelper.accessor("phoneNumber", {
-    header: "Phone Number",
+    header: "PHONE NUMBER",
     cell: (props) =>
       props.getValue()?.replace(/^(\d{3})(\d{3})(\d{4})/, "($1)$2-$3"),
   }),
   columnHelper.accessor("country", {
-    header: "Country",
+    header: "COUNTRY",
   }),
   columnHelper.accessor("occupation", {
-    header: "Occupation",
+    header: "OCCUPATION",
   }),
   columnHelper.accessor("role", {
-    header: "Role",
+    header: "ROLE",
   }),
 ];
 
@@ -221,7 +223,14 @@ function TableColumnHeader({
   onToggleVisibilityPopover,
   onToggleFilterPopover,
 }: Props) {
+  const [, setSelectedTableColumn] = useAtom(selectedTableColumnAtom);
+
   const [isColumnHeaderHovered, setIsColumnHeaderHovered] = useState(false);
+
+  function handleOnClickFilterOption(column: string) {
+    setSelectedTableColumn(column);
+    onToggleFilterPopover();
+  }
 
   return (
     <Th
@@ -279,7 +288,15 @@ function TableColumnHeader({
               variant="ghost"
             />
             <MenuList>
-              <MenuItem onClick={onToggleFilterPopover}>Filter</MenuItem>
+              <MenuItem
+                onClick={() =>
+                  handleOnClickFilterOption(
+                    header.column.columnDef.header as string
+                  )
+                }
+              >
+                Filter
+              </MenuItem>
               <MenuItem onClick={header.column.getToggleVisibilityHandler()}>
                 Hide
               </MenuItem>
@@ -305,6 +322,10 @@ function FilterPopover({
   onCloseFilterPopover,
   table,
 }: FilterPopoverProps) {
+  const [selectedTableColumn, setSelectedTableColumn] = useAtom(
+    selectedTableColumnAtom
+  );
+
   const [popoverSearchedColumn, setPopoverSearchedColumn] = useState("");
 
   return (
@@ -322,7 +343,12 @@ function FilterPopover({
           rowGap={4}
           alignItems="end"
         >
-          <Select size="xs" variant="flushed">
+          <Select
+            size="xs"
+            variant="flushed"
+            value={selectedTableColumn}
+            onChange={(e) => setSelectedTableColumn(e.target.value)}
+          >
             {table.getAllLeafColumns().map((column) => {
               const columnHeader = column.columnDef.header as string;
               return (

@@ -1,18 +1,21 @@
 import { type AppType } from "next/app";
 import { ChakraBaseProvider } from "@chakra-ui/react";
 import { Inter } from "next/font/google";
+import Head from "next/head";
+import { atom } from "jotai";
 
 import Layout from "~/components/layout";
 
 import { api } from "~/utils/api";
 
 import theme from "~/theme";
-import Head from "next/head";
 
 const inter = Inter({
   weight: ["400", "600", "700"],
   subsets: ["latin"],
 });
+
+export const selectedTableColumnAtom = atom("");
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
