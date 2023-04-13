@@ -124,16 +124,21 @@ const Customers: NextPage = () => {
           <p>Error {error.message}</p>
         ) : (
           <>
-            <TableContainer height="75vh" overflowY="auto" width="100%">
+            <TableContainer overflowY="auto" height="75vh">
               <Table
                 variant="simple"
                 backgroundColor="background-emphasis"
                 fontSize="xs"
-                width="100%"
               >
                 <Thead>
                   {table.getHeaderGroups().map((headerGroup) => (
-                    <Tr key={headerGroup.id}>
+                    <Tr
+                      key={headerGroup.id}
+                      position="sticky"
+                      top={0}
+                      left={0}
+                      backgroundColor="background-emphasis"
+                    >
                       {headerGroup.headers.map((header) => (
                         <TableColumnHeader
                           key={header.id}
@@ -145,7 +150,7 @@ const Customers: NextPage = () => {
                     </Tr>
                   ))}
                 </Thead>
-                <Tbody backgroundColor="primary-subtle">
+                <Tbody backgroundColor="primary-subtle" overflowY="scroll">
                   {table.getRowModel().rows.map((row) => (
                     <Tr
                       key={row.id}
@@ -164,7 +169,13 @@ const Customers: NextPage = () => {
                 </Tbody>
                 <Tfoot>
                   {table.getFooterGroups().map((footerGroup) => (
-                    <Tr key={footerGroup.id}>
+                    <Tr
+                      key={footerGroup.id}
+                      position="sticky"
+                      bottom={0}
+                      left={0}
+                      backgroundColor="background-emphasis"
+                    >
                       {footerGroup.headers.map((header) => (
                         <Th key={header.id}>
                           {header.isPlaceholder
