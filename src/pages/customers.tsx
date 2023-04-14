@@ -20,7 +20,7 @@ import {
   TableContainer,
   Tbody,
   Td,
-  Tfoot,
+  Text,
   Th,
   Thead,
   Tooltip,
@@ -43,6 +43,7 @@ import {
   getCoreRowModel,
   getSortedRowModel,
   getFilteredRowModel,
+  getPaginationRowModel,
   type SortingState,
   type Header,
   type Table as ReactTable,
@@ -66,6 +67,8 @@ import PageHeadings from "~/components/ui/PageHeadings";
 import { type RouterOutputs, api } from "~/utils/api";
 import useDebounce from "~/utils/useDebounce";
 import { selectedTableColumnAtom } from "./_app";
+import { getFacetedRowModel } from "@tanstack/react-table";
+import { getFacetedUniqueValues } from "@tanstack/react-table";
 
 type Customer = RouterOutputs["user"]["getAllWithUserRole"][0];
 
@@ -165,12 +168,19 @@ const Customers: NextPage = () => {
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getFacetedRowModel: getFacetedRowModel(),
+    getFacetedUniqueValues: getFacetedUniqueValues(),
     globalFilterFn: fuzzyFilter,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
     onColumnVisibilityChange: setColumnVisibility,
   });
+
+  useEffect(() => {
+    table.setPageSize(20);
+  }, [table]);
 
   return (
     <>
@@ -191,7 +201,7 @@ const Customers: NextPage = () => {
               onSetGlobalFilter={setGlobalFilter}
               onToggleVisibilityPopover={onToggleVisibilityPopover}
             />
-            <TableContainer overflowY="auto" height="75vh">
+            <TableContainer overflowY="auto" maxHeight="75vh">
               <Table
                 variant="simple"
                 backgroundColor="background-emphasis"
@@ -234,30 +244,86 @@ const Customers: NextPage = () => {
                     </Tr>
                   ))}
                 </Tbody>
-                <Tfoot>
-                  {table.getFooterGroups().map((footerGroup) => (
-                    <Tr
-                      key={footerGroup.id}
-                      position="sticky"
-                      bottom={0}
-                      left={0}
-                      backgroundColor="background-emphasis"
-                    >
-                      {footerGroup.headers.map((header) => (
-                        <Th key={header.id}>
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(
-                                header.column.columnDef.footer,
-                                header.getContext()
-                              )}
-                        </Th>
-                      ))}
-                    </Tr>
-                  ))}
-                </Tfoot>
               </Table>
             </TableContainer>
+            <Flex justifyContent="end" alignItems="center" columnGap={2}>
+              <Button
+                variant="ghost"
+                size="xs"
+                onClick={() => table.setPageIndex(0)}
+                disabled={!table.getCanPreviousPage()}
+              >
+                {"<<"}
+              </Button>
+              <Button
+                variant="ghost"
+                size="xs"
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+              >
+                {"<"}
+              </Button>
+              <Button
+                variant="ghost"
+                size="xs"
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+              >
+                {">"}
+              </Button>
+              <Button
+                variant="ghost"
+                size="xs"
+                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                disabled={!table.getCanNextPage()}
+              >
+                {">>"}
+              </Button>
+              <Flex columnGap={2} alignItems="center">
+                <Text as="span" fontSize="xs">
+                  Page
+                </Text>
+                <Text as="span" fontSize="xs" fontWeight="bold">
+                  {table.getState().pagination.pageIndex + 1} of{" "}
+                  {table.getPageCount()}
+                </Text>
+                <Text
+                  as="span"
+                  fontSize="xs"
+                  borderLeft="1px dotted"
+                  paddingLeft={2}
+                >
+                  Go to page:
+                </Text>
+                <Input
+                  type="number"
+                  size="xs"
+                  maxWidth="40px"
+                  defaultValue={table.getState().pagination.pageIndex + 1}
+                  onChange={(e) => {
+                    const page = e.target.value
+                      ? Number(e.target.value) - 1
+                      : 0;
+                    table.setPageIndex(page);
+                  }}
+                />
+              </Flex>
+              <Select
+                maxWidth="90px"
+                size="xs"
+                variant="unstyled"
+                value={table.getState().pagination.pageSize}
+                onChange={(e) => {
+                  table.setPageSize(Number(e.target.value));
+                }}
+              >
+                {[10, 20, 50, 100].map((pageSize) => (
+                  <option key={pageSize} value={pageSize}>
+                    Show {pageSize}
+                  </option>
+                ))}
+              </Select>
+            </Flex>
             <FilterPopover
               isOpenFilterPopover={isOpenFilterPopover}
               onCloseFilterPopover={onCloseFilterPopover}
