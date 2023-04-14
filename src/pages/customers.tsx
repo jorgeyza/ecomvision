@@ -187,7 +187,10 @@ const Customers: NextPage = () => {
             rowGap={1}
             position="relative"
           >
-            <TableOptions onSetGlobalFilter={setGlobalFilter} />
+            <TableOptions
+              onSetGlobalFilter={setGlobalFilter}
+              onToggleVisibilityPopover={onToggleVisibilityPopover}
+            />
             <TableContainer overflowY="auto" height="75vh">
               <Table
                 variant="simple"
@@ -539,9 +542,13 @@ function ColumnFilterInput({ column }: ColumnFilterInputProps) {
 
 interface TableOptionsProps {
   onSetGlobalFilter: Dispatch<SetStateAction<string>>;
+  onToggleVisibilityPopover: () => void;
 }
 
-function TableOptions({ onSetGlobalFilter }: TableOptionsProps) {
+function TableOptions({
+  onSetGlobalFilter,
+  onToggleVisibilityPopover,
+}: TableOptionsProps) {
   const [value, setValue] = useState("");
   const debouncedValue = useDebounce<string>(value, 500);
 
@@ -551,7 +558,12 @@ function TableOptions({ onSetGlobalFilter }: TableOptionsProps) {
 
   return (
     <Flex justifyContent="space-between" alignItems="end" columnGap={2}>
-      <Button leftIcon={<ColumnsIcon size={16} />} size="xs" variant="ghost">
+      <Button
+        leftIcon={<ColumnsIcon size={16} />}
+        size="xs"
+        variant="ghost"
+        onClick={onToggleVisibilityPopover}
+      >
         COLUMNS
       </Button>
       <InputGroup size="sm" maxWidth={250}>
