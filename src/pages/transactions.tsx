@@ -45,6 +45,8 @@ const columns = [
   columnHelper.accessor("productsIds", {
     header: "# OF PRODUCTS",
     cell: (props) => props.getValue().length,
+    enableSorting: false,
+    enableColumnFilter: false,
   }),
   columnHelper.accessor("cost", {
     header: "COST",

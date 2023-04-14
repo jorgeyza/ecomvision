@@ -51,35 +51,37 @@ const TableColumnHeader = <T extends object>({
             onClick={header.column.getToggleSortingHandler()}
           >
             {flexRender(header.column.columnDef.header, header.getContext())}
-            <Tooltip label="Sort" placement="bottom-start" fontSize="sm">
-              {{
-                asc: (
+            {header.column.getCanSort() && (
+              <Tooltip label="Sort" placement="bottom-start" fontSize="sm">
+                {{
+                  asc: (
+                    <IconButton
+                      aria-label="Sort in descending order"
+                      icon={<ArrowUpIcon size={16} />}
+                      backgroundColor="transparent"
+                      size="xs"
+                    />
+                  ),
+                  desc: (
+                    <IconButton
+                      aria-label="Undo sorting"
+                      icon={<ArrowDownIcon size={16} />}
+                      backgroundColor="transparent"
+                      size="xs"
+                    />
+                  ),
+                }[header.column.getIsSorted() as string] ?? (
                   <IconButton
                     aria-label="Sort in descending order"
+                    color="neutral-300"
+                    opacity={isColumnHeaderHovered ? 1 : 0}
                     icon={<ArrowUpIcon size={16} />}
                     backgroundColor="transparent"
                     size="xs"
                   />
-                ),
-                desc: (
-                  <IconButton
-                    aria-label="Undo sorting"
-                    icon={<ArrowDownIcon size={16} />}
-                    backgroundColor="transparent"
-                    size="xs"
-                  />
-                ),
-              }[header.column.getIsSorted() as string] ?? (
-                <IconButton
-                  aria-label="Sort in descending order"
-                  color="neutral-300"
-                  opacity={isColumnHeaderHovered ? 1 : 0}
-                  icon={<ArrowUpIcon size={16} />}
-                  backgroundColor="transparent"
-                  size="xs"
-                />
-              )}
-            </Tooltip>
+                )}
+              </Tooltip>
+            )}
           </Flex>
           <Menu>
             <MenuButton
@@ -91,11 +93,13 @@ const TableColumnHeader = <T extends object>({
               variant="ghost"
             />
             <MenuList>
-              <MenuItem
-                onClick={() => handleOnClickFilterOption(header.column.id)}
-              >
-                Filter
-              </MenuItem>
+              {header.column.getCanFilter() && (
+                <MenuItem
+                  onClick={() => handleOnClickFilterOption(header.column.id)}
+                >
+                  Filter
+                </MenuItem>
+              )}
               <MenuItem onClick={header.column.getToggleVisibilityHandler()}>
                 Hide
               </MenuItem>
