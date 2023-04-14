@@ -21,6 +21,7 @@ import {
   type ColumnFiltersState,
   type FilterFn,
   type ColumnDef,
+  getFacetedMinMaxValues,
 } from "@tanstack/react-table";
 import { type RankingInfo } from "@tanstack/match-sorter-utils";
 import { useState, useEffect } from "react";
@@ -87,6 +88,7 @@ const DataGrid = <T extends object>({ data, columns, filterFn }: Props<T>) => {
     getPaginationRowModel: getPaginationRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
+    getFacetedMinMaxValues: getFacetedMinMaxValues(),
     globalFilterFn: filterFn,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,

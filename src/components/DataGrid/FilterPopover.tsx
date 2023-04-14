@@ -21,7 +21,7 @@ const FilterPopover = <T extends object>({
     selectedTableColumnAtom
   );
   const column = useMemo(
-    () => table.getColumn(selectedTableColumn),
+    () => Boolean(selectedTableColumn) && table.getColumn(selectedTableColumn),
     [selectedTableColumn, table]
   );
 
@@ -56,7 +56,7 @@ const FilterPopover = <T extends object>({
               );
             })}
           </Select>
-          {column && <ColumnFilterInput<T> column={column} />}
+          {column && <ColumnFilterInput<T> column={column} table={table} />}
         </PopoverBody>
       </PopoverContent>
     </Popover>
