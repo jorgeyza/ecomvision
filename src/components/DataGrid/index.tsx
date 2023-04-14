@@ -8,8 +8,22 @@ import {
   Tr,
   useDisclosure,
 } from "@chakra-ui/react";
-import { flexRender, type Table } from "@tanstack/react-table";
-import { type Dispatch, type SetStateAction } from "react";
+import {
+  useReactTable,
+  getCoreRowModel,
+  getSortedRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
+  flexRender,
+  type SortingState,
+  type ColumnFiltersState,
+  type FilterFn,
+  type ColumnDef,
+} from "@tanstack/react-table";
+import { type RankingInfo } from "@tanstack/match-sorter-utils";
+import { useState, useEffect } from "react";
 
 import DataGridOptions from "./DataGridOptions";
 import TableColumnHeader from "./TableColumnHeader";
@@ -17,12 +31,25 @@ import DataGridFooter from "./DataGridFooter";
 import FilterPopover from "./FilterPopover";
 import VisibilityPopover from "./VisibilityPopover";
 
-interface Props<T extends object> {
-  onSetGlobalFilter: Dispatch<SetStateAction<string>>;
-  table: Table<T>;
+import useDebounce from "~/utils/useDebounce";
+
+declare module "@tanstack/react-table" {
+  interface FilterFns {
+    fuzzy: FilterFn<unknown>;
+  }
+  interface FilterMeta {
+    itemRank: RankingInfo;
+  }
 }
 
-const DataGrid = <T extends object>({ table, onSetGlobalFilter }: Props<T>) => {
+interface Props<T extends object> {
+  data: T[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  columns: ColumnDef<T, any>[];
+  filterFn: FilterFn<T>;
+}
+
+const DataGrid = <T extends object>({ data, columns, filterFn }: Props<T>) => {
   const {
     isOpen: isOpenVisibilityPopover,
     onToggle: onToggleVisibilityPopover,
@@ -35,10 +62,46 @@ const DataGrid = <T extends object>({ table, onSetGlobalFilter }: Props<T>) => {
     onClose: onCloseFilterPopover,
   } = useDisclosure();
 
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [globalFilter, setGlobalFilter] = useState("");
+  const [columnVisibility, setColumnVisibility] = useState({});
+
+  const debouncedGlobalFilter = useDebounce<string>(globalFilter, 500);
+
+  const table = useReactTable({
+    data,
+    columns,
+    filterFns: {
+      fuzzy: filterFn,
+    },
+    state: {
+      sorting,
+      columnFilters,
+      globalFilter: debouncedGlobalFilter,
+      columnVisibility,
+    },
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getFacetedRowModel: getFacetedRowModel(),
+    getFacetedUniqueValues: getFacetedUniqueValues(),
+    globalFilterFn: filterFn,
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    onGlobalFilterChange: setGlobalFilter,
+    onColumnVisibilityChange: setColumnVisibility,
+  });
+
+  useEffect(() => {
+    table.setPageSize(20);
+  }, [table]);
+
   return (
     <Flex width="100%" flexDirection="column" rowGap={1} position="relative">
       <DataGridOptions
-        onSetGlobalFilter={onSetGlobalFilter}
+        onSetGlobalFilter={setGlobalFilter}
         onToggleVisibilityPopover={onToggleVisibilityPopover}
       />
       <TableContainer overflowY="auto" maxHeight="75vh">
