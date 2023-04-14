@@ -92,11 +92,7 @@ const TableColumnHeader = <T extends object>({
             />
             <MenuList>
               <MenuItem
-                onClick={() =>
-                  handleOnClickFilterOption(
-                    header.column.columnDef.header as string
-                  )
-                }
+                onClick={() => handleOnClickFilterOption(header.column.id)}
               >
                 Filter
               </MenuItem>

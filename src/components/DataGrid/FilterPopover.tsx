@@ -20,9 +20,8 @@ const FilterPopover = <T extends object>({
   const [selectedTableColumn, setSelectedTableColumn] = useAtom(
     selectedTableColumnAtom
   );
-
   const column = useMemo(
-    () => table.getColumn(selectedTableColumn.toLowerCase()),
+    () => table.getColumn(selectedTableColumn),
     [selectedTableColumn, table]
   );
 
@@ -49,8 +48,9 @@ const FilterPopover = <T extends object>({
           >
             {table.getAllLeafColumns().map((column) => {
               const columnHeader = column.columnDef.header as string;
+              const columnHeaderId = column.id;
               return (
-                <option key={columnHeader} value={columnHeader}>
+                <option key={columnHeader} value={columnHeaderId}>
                   {columnHeader}
                 </option>
               );
