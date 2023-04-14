@@ -5,6 +5,8 @@ import {
   FormLabel,
   IconButton,
   Input,
+  InputGroup,
+  InputRightElement,
   Menu,
   MenuButton,
   MenuItem,
@@ -26,27 +28,73 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { type NextPage } from "next";
-import { useState, type ReactNode } from "react";
+import {
+  useState,
+  type ReactNode,
+  useMemo,
+  useEffect,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 import {
   createColumnHelper,
   flexRender,
+  useReactTable,
   getCoreRowModel,
   getSortedRowModel,
+  getFilteredRowModel,
   type SortingState,
-  useReactTable,
   type Header,
   type Table as ReactTable,
+  type Column,
+  type ColumnFiltersState,
+  type FilterFn,
 } from "@tanstack/react-table";
-import { ArrowDown, ArrowUp, MoreVertical } from "lucide-react";
+import { type RankingInfo, rankItem } from "@tanstack/match-sorter-utils";
+import {
+  ArrowDownIcon,
+  ArrowUpIcon,
+  MoreVerticalIcon,
+  ColumnsIcon,
+  SearchIcon,
+} from "lucide-react";
 import { useAtom } from "jotai";
 
 import Loading from "~/components/ui/Loading";
 import PageHeadings from "~/components/ui/PageHeadings";
 
 import { type RouterOutputs, api } from "~/utils/api";
+import useDebounce from "~/utils/useDebounce";
 import { selectedTableColumnAtom } from "./_app";
 
 type Customer = RouterOutputs["user"]["getAllWithUserRole"][0];
+
+declare module "@tanstack/react-table" {
+  interface FilterFns {
+    fuzzy: FilterFn<unknown>;
+  }
+  interface FilterMeta {
+    itemRank: RankingInfo;
+  }
+}
+
+const fuzzyFilter: FilterFn<Customer> = (
+  row,
+  columnId,
+  value: string,
+  addMeta
+) => {
+  // Rank the item
+  const itemRank = rankItem(row.getValue(columnId), value);
+
+  // Store the itemRank info
+  addMeta({
+    itemRank,
+  });
+
+  // Return if the item should be filtered in/out
+  return itemRank.passed;
+};
 
 const columnHelper = createColumnHelper<Customer>();
 
@@ -96,36 +144,50 @@ const Customers: NextPage = () => {
   } = useDisclosure();
 
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [globalFilter, setGlobalFilter] = useState("");
   const [columnVisibility, setColumnVisibility] = useState({});
+
+  const debouncedGlobalFilter = useDebounce<string>(globalFilter, 500);
 
   const table = useReactTable({
     data: allCustomers,
     columns,
-    state: {
-      columnVisibility,
-      sorting,
+    filterFns: {
+      fuzzy: fuzzyFilter,
     },
-    onColumnVisibilityChange: setColumnVisibility,
-    onSortingChange: setSorting,
+    state: {
+      sorting,
+      columnFilters,
+      globalFilter: debouncedGlobalFilter,
+      columnVisibility,
+    },
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    globalFilterFn: fuzzyFilter,
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    onGlobalFilterChange: setGlobalFilter,
+    onColumnVisibilityChange: setColumnVisibility,
   });
 
   return (
     <>
       <PageHeadings title="CUSTOMERS" subtitle="List of customers" />
-      <Flex
-        width="100%"
-        flexDirection="column"
-        alignItems="center"
-        position="relative"
-      >
+      <Flex width="100%" flexDirection="column" alignItems="center">
         {status === "loading" ? (
           <Loading />
         ) : status === "error" ? (
           <p>Error {error.message}</p>
         ) : (
-          <>
+          <Flex
+            width="100%"
+            flexDirection="column"
+            rowGap={1}
+            position="relative"
+          >
+            <TableOptions onSetGlobalFilter={setGlobalFilter} />
             <TableContainer overflowY="auto" height="75vh">
               <Table
                 variant="simple"
@@ -203,7 +265,7 @@ const Customers: NextPage = () => {
               onCloseVisibilityPopover={onCloseVisibilityPopover}
               table={table}
             />
-          </>
+          </Flex>
         )}
       </Flex>
     </>
@@ -253,7 +315,7 @@ function TableColumnHeader({
                 asc: (
                   <IconButton
                     aria-label="Sort in descending order"
-                    icon={<ArrowUp size={16} />}
+                    icon={<ArrowUpIcon size={16} />}
                     backgroundColor="transparent"
                     size="xs"
                   />
@@ -261,7 +323,7 @@ function TableColumnHeader({
                 desc: (
                   <IconButton
                     aria-label="Undo sorting"
-                    icon={<ArrowDown size={16} />}
+                    icon={<ArrowDownIcon size={16} />}
                     backgroundColor="transparent"
                     size="xs"
                   />
@@ -271,7 +333,7 @@ function TableColumnHeader({
                   aria-label="Sort in descending order"
                   color="neutral-300"
                   opacity={isColumnHeaderHovered ? 1 : 0}
-                  icon={<ArrowUp size={16} />}
+                  icon={<ArrowUpIcon size={16} />}
                   backgroundColor="transparent"
                   size="xs"
                 />
@@ -283,7 +345,7 @@ function TableColumnHeader({
               as={IconButton}
               aria-label="Options"
               opacity={isColumnHeaderHovered ? 1 : 0}
-              icon={<MoreVertical size={16} />}
+              icon={<MoreVerticalIcon size={16} />}
               size="xs"
               variant="ghost"
             />
@@ -326,7 +388,10 @@ function FilterPopover({
     selectedTableColumnAtom
   );
 
-  const [popoverSearchedColumn, setPopoverSearchedColumn] = useState("");
+  const column = useMemo(
+    () => table.getColumn(selectedTableColumn.toLowerCase()),
+    [selectedTableColumn, table]
+  );
 
   return (
     <Popover
@@ -358,19 +423,7 @@ function FilterPopover({
               );
             })}
           </Select>
-          <Select size="xs" variant="flushed">
-            <option value="equals">equals</option>
-            <option value="contains">contains</option>
-          </Select>
-          <Input
-            placeholder="Filter value"
-            size="xs"
-            variant="flushed"
-            value={popoverSearchedColumn}
-            onChange={(e) =>
-              setPopoverSearchedColumn(e.target.value.toLowerCase())
-            }
-          />
+          {column && <ColumnFilterInput column={column} />}
         </PopoverBody>
       </PopoverContent>
     </Popover>
@@ -457,5 +510,62 @@ function VisibilityPopover({
         </PopoverBody>
       </PopoverContent>
     </Popover>
+  );
+}
+
+interface ColumnFilterInputProps {
+  column: Column<Customer, unknown>;
+}
+
+function ColumnFilterInput({ column }: ColumnFilterInputProps) {
+  const [value, setValue] = useState("");
+
+  const debouncedColumnFilterValue = useDebounce<unknown>(value, 500);
+
+  useEffect(() => {
+    column.setFilterValue(debouncedColumnFilterValue);
+  }, [column, debouncedColumnFilterValue]);
+
+  return (
+    <Input
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+      placeholder={`Filter value... (${column.getFacetedUniqueValues().size})`}
+      size="xs"
+      variant="flushed"
+    />
+  );
+}
+
+interface TableOptionsProps {
+  onSetGlobalFilter: Dispatch<SetStateAction<string>>;
+}
+
+function TableOptions({ onSetGlobalFilter }: TableOptionsProps) {
+  const [value, setValue] = useState("");
+  const debouncedValue = useDebounce<string>(value, 500);
+
+  useEffect(() => {
+    onSetGlobalFilter(debouncedValue);
+  }, [debouncedValue, onSetGlobalFilter]);
+
+  return (
+    <Flex justifyContent="space-between" alignItems="end" columnGap={2}>
+      <Button leftIcon={<ColumnsIcon size={16} />} size="xs" variant="ghost">
+        COLUMNS
+      </Button>
+      <InputGroup size="sm" maxWidth={250}>
+        <Input
+          borderRadius="md"
+          value={value}
+          variant="flushed"
+          placeholder="Search table..."
+          onChange={(e) => setValue(e.target.value)}
+        />
+        <InputRightElement marginRight={2}>
+          <SearchIcon size={16} />
+        </InputRightElement>
+      </InputGroup>
+    </Flex>
   );
 }
