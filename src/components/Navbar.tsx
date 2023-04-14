@@ -14,12 +14,12 @@ import {
   useColorMode,
 } from "@chakra-ui/react";
 import {
-  Menu as MenuIcon,
-  Search,
-  Sun,
-  Moon,
-  Settings,
-  ChevronDown,
+  MenuIcon,
+  SearchIcon,
+  SunIcon,
+  MoonIcon,
+  SettingsIcon,
+  ChevronDownIcon,
 } from "lucide-react";
 import NextImage from "next/image";
 
@@ -58,7 +58,7 @@ function Navbar({ onSidebarToggle, user }: Props) {
             placeholder="Search..."
           />
           <InputRightElement marginRight={2}>
-            <Search size={20} />
+            <SearchIcon size={20} />
           </InputRightElement>
         </InputGroup>
       </Flex>
@@ -66,12 +66,12 @@ function Navbar({ onSidebarToggle, user }: Props) {
         <IconButton
           onClick={toggleColorMode}
           aria-label="Toggle app color theme"
-          icon={colorMode === "dark" ? <Moon /> : <Sun />}
+          icon={colorMode === "dark" ? <MoonIcon /> : <SunIcon />}
           backgroundColor="transparent"
         />
         <IconButton
           aria-label="Open settings"
-          icon={<Settings />}
+          icon={<SettingsIcon />}
           backgroundColor="transparent"
         />
         <Menu>
@@ -80,7 +80,7 @@ function Navbar({ onSidebarToggle, user }: Props) {
             backgroundColor="transparent"
             color="accent-300"
             height="56px"
-            rightIcon={<ChevronDown />}
+            rightIcon={<ChevronDownIcon />}
           >
             <Flex alignItems="center" columnGap={4}>
               <Box

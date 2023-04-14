@@ -1,5 +1,5 @@
 import { Button, Flex } from "@chakra-ui/react";
-import { Download } from "lucide-react";
+import { DownloadIcon } from "lucide-react";
 import { type NextPage } from "next";
 
 import PageHeadings from "~/components/ui/PageHeadings";
@@ -16,7 +16,7 @@ const Dashboard: NextPage = () => {
           size="lg"
           fontSize="sm"
         >
-          <Download size={20} />
+          <DownloadIcon size={20} />
           DOWNLOAD REPORTS
         </Button>
       </Flex>

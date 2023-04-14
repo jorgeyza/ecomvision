@@ -16,19 +16,19 @@ import {
   useMediaQuery,
 } from "@chakra-ui/react";
 import {
-  Home,
-  ShoppingCart,
-  Users,
-  FileText,
-  Globe2,
-  Calculator,
-  CalendarDays,
-  CalendarRange,
-  PieChart,
-  ShieldAlert,
-  TrendingUp,
-  ChevronLeft,
-  ChevronRight,
+  HomeIcon,
+  ShoppingCartIcon,
+  UsersIcon,
+  FileTextIcon,
+  Globe2Icon,
+  CalculatorIcon,
+  CalendarDaysIcon,
+  CalendarRangeIcon,
+  PieChartIcon,
+  ShieldAlertIcon,
+  TrendingUpIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
 } from "lucide-react";
 import { Settings } from "lucide-react";
 
@@ -45,7 +45,7 @@ interface Props {
 const navItems = [
   {
     label: "Dashboard",
-    icon: <Home />,
+    icon: <HomeIcon />,
   },
   {
     label: "Client Facing",
@@ -53,19 +53,19 @@ const navItems = [
   },
   {
     label: "Products",
-    icon: <ShoppingCart />,
+    icon: <ShoppingCartIcon />,
   },
   {
     label: "Customers",
-    icon: <Users />,
+    icon: <UsersIcon />,
   },
   {
     label: "Transactions",
-    icon: <FileText />,
+    icon: <FileTextIcon />,
   },
   {
     label: "Geography",
-    icon: <Globe2 />,
+    icon: <Globe2Icon />,
   },
   {
     label: "Sales",
@@ -73,19 +73,19 @@ const navItems = [
   },
   {
     label: "Overview",
-    icon: <Calculator />,
+    icon: <CalculatorIcon />,
   },
   {
     label: "Daily",
-    icon: <CalendarDays />,
+    icon: <CalendarDaysIcon />,
   },
   {
     label: "Monthly",
-    icon: <CalendarRange />,
+    icon: <CalendarRangeIcon />,
   },
   {
     label: "Breakdown",
-    icon: <PieChart />,
+    icon: <PieChartIcon />,
   },
   {
     label: "Management",
@@ -93,11 +93,11 @@ const navItems = [
   },
   {
     label: "Admin",
-    icon: <ShieldAlert />,
+    icon: <ShieldAlertIcon />,
   },
   {
     label: "Performance",
-    icon: <TrendingUp />,
+    icon: <TrendingUpIcon />,
   },
 ];
 
@@ -156,7 +156,7 @@ const Sidebar = ({ isOpen, onToggle, user }: Props) => {
             aria-label="close-drawer"
             onClick={onToggle}
           >
-            <ChevronLeft />
+            <ChevronLeftIcon />
           </IconButton>
         </Flex>
 
@@ -222,7 +222,9 @@ const Sidebar = ({ isOpen, onToggle, user }: Props) => {
                       width="100%"
                     >
                       <Text fontSize="sm">{label}</Text>
-                      {active === lowcaseLabel && <ChevronRight size={16} />}
+                      {active === lowcaseLabel && (
+                        <ChevronRightIcon size={16} />
+                      )}
                     </Flex>
                   </Link>
                 </ListItem>
