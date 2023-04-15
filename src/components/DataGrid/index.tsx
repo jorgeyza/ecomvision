@@ -16,15 +16,16 @@ import {
   getPaginationRowModel,
   getFacetedRowModel,
   getFacetedUniqueValues,
+  getFacetedMinMaxValues,
   flexRender,
   type SortingState,
   type ColumnFiltersState,
   type FilterFn,
   type ColumnDef,
-  getFacetedMinMaxValues,
+  type PaginationState,
 } from "@tanstack/react-table";
 import { type RankingInfo } from "@tanstack/match-sorter-utils";
-import { useState, useEffect } from "react";
+import { useState, type Dispatch, type SetStateAction, useMemo } from "react";
 
 import DataGridOptions from "./DataGridOptions";
 import TableColumnHeader from "./TableColumnHeader";
@@ -33,6 +34,7 @@ import FilterPopover from "./FilterPopover";
 import VisibilityPopover from "./VisibilityPopover";
 
 import useDebounce from "~/utils/useDebounce";
+import { type TableOptions } from "@tanstack/react-table";
 
 declare module "@tanstack/react-table" {
   interface FilterFns {
@@ -44,13 +46,26 @@ declare module "@tanstack/react-table" {
 }
 
 interface Props<T extends object> {
-  data: T[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   columns: ColumnDef<T, any>[];
+  data: T[];
   filterFn: FilterFn<T>;
+  pagination?: {
+    pageIndex: number;
+    pageSize: number;
+  };
+  pageCount?: number;
+  onSetPagination?: Dispatch<SetStateAction<PaginationState>>;
 }
 
-const DataGrid = <T extends object>({ data, columns, filterFn }: Props<T>) => {
+const DataGrid = <T extends object>({
+  data,
+  columns,
+  filterFn,
+  pagination,
+  onSetPagination,
+  pageCount,
+}: Props<T>) => {
   const {
     isOpen: isOpenVisibilityPopover,
     onToggle: onToggleVisibilityPopover,
@@ -70,35 +85,59 @@ const DataGrid = <T extends object>({ data, columns, filterFn }: Props<T>) => {
 
   const debouncedGlobalFilter = useDebounce<string>(globalFilter, 500);
 
-  const table = useReactTable({
-    data,
-    columns,
-    filterFns: {
-      fuzzy: filterFn,
-    },
-    state: {
-      sorting,
+  const useReactTableProperties = useMemo<TableOptions<T>>(
+    () => ({
+      data,
+      columns,
+      pageCount: pageCount,
+      filterFns: {
+        fuzzy: filterFn,
+      },
+      state: {
+        sorting,
+        columnFilters,
+        globalFilter: debouncedGlobalFilter,
+        columnVisibility,
+        pagination,
+      },
+      initialState: {
+        pagination: { pageIndex: 0, pageSize: 20 },
+      },
+      getCoreRowModel: getCoreRowModel(),
+      getSortedRowModel: getSortedRowModel(),
+      getFilteredRowModel: getFilteredRowModel(),
+      getPaginationRowModel: getPaginationRowModel(),
+      getFacetedRowModel: getFacetedRowModel(),
+      getFacetedUniqueValues: getFacetedUniqueValues(),
+      getFacetedMinMaxValues: getFacetedMinMaxValues(),
+      globalFilterFn: filterFn,
+      onSortingChange: setSorting,
+      onColumnFiltersChange: setColumnFilters,
+      onGlobalFilterChange: setGlobalFilter,
+      onColumnVisibilityChange: setColumnVisibility,
+      onPaginationChange: onSetPagination,
+      manualPagination: !!pagination,
+    }),
+    [
       columnFilters,
-      globalFilter: debouncedGlobalFilter,
       columnVisibility,
-    },
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
-    getFacetedMinMaxValues: getFacetedMinMaxValues(),
-    globalFilterFn: filterFn,
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    onGlobalFilterChange: setGlobalFilter,
-    onColumnVisibilityChange: setColumnVisibility,
-  });
+      columns,
+      data,
+      debouncedGlobalFilter,
+      filterFn,
+      onSetPagination,
+      pageCount,
+      pagination,
+      sorting,
+    ]
+  );
 
-  useEffect(() => {
-    table.setPageSize(20);
-  }, [table]);
+  if (!pagination) {
+    delete useReactTableProperties?.state?.pagination;
+    delete useReactTableProperties.onPaginationChange;
+  }
+
+  const table = useReactTable(useReactTableProperties);
 
   return (
     <Flex width="100%" flexDirection="column" rowGap={1} position="relative">

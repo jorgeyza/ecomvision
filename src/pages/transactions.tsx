@@ -1,15 +1,20 @@
 import { Flex } from "@chakra-ui/react";
 import { type NextPage } from "next";
-import { createColumnHelper, type FilterFn } from "@tanstack/react-table";
+import {
+  createColumnHelper,
+  type PaginationState,
+  type FilterFn,
+} from "@tanstack/react-table";
 import { rankItem } from "@tanstack/match-sorter-utils";
+import { useMemo, useState } from "react";
 
 import Loading from "~/components/ui/Loading";
 import PageHeadings from "~/components/ui/PageHeadings";
-
-import { type RouterOutputs, api } from "~/utils/api";
 import DataGrid from "~/components/DataGrid";
 
-type Transaction = RouterOutputs["transaction"]["getAllWithPagination"][0];
+import { type RouterOutputs, api } from "~/utils/api";
+
+type Transaction = RouterOutputs["transaction"]["getAll"][0];
 
 const fuzzyFilter: FilterFn<Transaction> = (
   row,
@@ -60,11 +65,27 @@ const columns = [
 ];
 
 const Transactions: NextPage = () => {
+  const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 20,
+  });
+
   const {
-    data: allTransactions = [],
+    data: allTransactions,
     status,
     error,
-  } = api.transaction.getAllWithPagination.useQuery();
+  } = api.transaction.getAllWithPagination.useQuery({
+    pageIndex,
+    pageSize,
+  });
+
+  const pagination = useMemo(
+    () => ({
+      pageIndex,
+      pageSize,
+    }),
+    [pageIndex, pageSize]
+  );
 
   return (
     <>
@@ -76,9 +97,12 @@ const Transactions: NextPage = () => {
           <p>Error {error.message}</p>
         ) : (
           <DataGrid<Transaction>
-            data={allTransactions}
+            data={allTransactions.rows}
             columns={columns}
             filterFn={fuzzyFilter}
+            pagination={pagination}
+            onSetPagination={setPagination}
+            pageCount={allTransactions.pageCount}
           />
         )}
       </Flex>
