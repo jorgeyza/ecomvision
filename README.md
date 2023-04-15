@@ -6,7 +6,9 @@ This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3
 
 If you use a local MongoDB replica set, remember to first seed your database `pnpm prisma db seed`
 
-Web app for data visualization with a dashboard, tables and graphics generated with Nivo Charts.
+Web app for data visualization with a dashboard, tables and charts generated with Nivo Charts.
+
+This projects has both client-side and server-side pagination for the tables. You can filter tables globally or per column and also sort them.
 
 To start project use `pnpm dev`. You can see the [live application here](https://ecomvision.jorgeyza.com)
 
