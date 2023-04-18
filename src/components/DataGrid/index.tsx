@@ -89,7 +89,7 @@ const DataGrid = <T extends object>({
     () => ({
       data,
       columns,
-      pageCount: pageCount,
+      pageCount, //server-side pagination
       filterFns: {
         fuzzy: filterFn,
       },
@@ -98,7 +98,7 @@ const DataGrid = <T extends object>({
         columnFilters,
         globalFilter: debouncedGlobalFilter,
         columnVisibility,
-        pagination,
+        pagination, //server-side pagination
       },
       initialState: {
         pagination: { pageIndex: 0, pageSize: 20 },
@@ -115,8 +115,8 @@ const DataGrid = <T extends object>({
       onColumnFiltersChange: setColumnFilters,
       onGlobalFilterChange: setGlobalFilter,
       onColumnVisibilityChange: setColumnVisibility,
-      onPaginationChange: onSetPagination,
-      manualPagination: !!pagination,
+      onPaginationChange: onSetPagination, //server-side pagination
+      manualPagination: !!pagination, //server-side pagination
     }),
     [
       columnFilters,
@@ -132,6 +132,7 @@ const DataGrid = <T extends object>({
     ]
   );
 
+  // If only client-side pagination, these properties are deleted
   if (!pagination) {
     delete useReactTableProperties?.state?.pagination;
     delete useReactTableProperties.onPaginationChange;
