@@ -10,16 +10,16 @@ import {
 } from "@chakra-ui/react";
 import { type NextPage } from "next";
 import { useMemo, useState } from "react";
+import { ResponsiveLine, type Serie } from "@nivo/line";
+import { CalendarRangeIcon } from "lucide-react";
 import { format } from "date-fns";
 import { type DateRange, DayPicker } from "react-day-picker";
-import { ResponsiveLine, type Serie } from "@nivo/line";
 import "react-day-picker/dist/style.css";
 
 import Loading from "~/components/ui/Loading";
 import PageHeadings from "~/components/ui/PageHeadings";
 
 import { api } from "~/utils/api";
-import { CalendarRangeIcon } from "lucide-react";
 
 const Overview: NextPage = () => {
   const [accent200, accent500, accent600, primary500] = useToken("colors", [
@@ -62,7 +62,7 @@ const Overview: NextPage = () => {
     error,
   } = api.overallStats.getSales.useQuery();
 
-  const [formattedData] = useMemo(() => {
+  const formattedData = useMemo(() => {
     if (!allSales) return [];
 
     const { dailyData } = allSales;
@@ -102,8 +102,7 @@ const Overview: NextPage = () => {
       }
     });
 
-    const formattedData = [totalSalesLine, totalUnitsLine];
-    return [formattedData];
+    return [totalSalesLine, totalUnitsLine];
   }, [allSales, range?.from, range?.to]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
