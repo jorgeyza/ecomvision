@@ -12,6 +12,7 @@ import {
   MenuList,
   Text,
   useColorMode,
+  useMediaQuery,
 } from "@chakra-ui/react";
 import {
   MenuIcon,
@@ -33,6 +34,7 @@ interface Props {
 
 function Navbar({ onSidebarToggle, user }: Props) {
   const { colorMode, toggleColorMode } = useColorMode();
+  const [isLargerThan499] = useMediaQuery("(min-width: 500px)");
 
   return (
     <Flex
@@ -50,17 +52,19 @@ function Navbar({ onSidebarToggle, user }: Props) {
           icon={<MenuIcon size={20} />}
           backgroundColor="transparent"
         />
-        <InputGroup>
-          <Input
-            borderRadius="md"
-            fontSize="sm"
-            variant="filled"
-            placeholder="Search..."
-          />
-          <InputRightElement marginRight={2}>
-            <SearchIcon size={20} />
-          </InputRightElement>
-        </InputGroup>
+        {isLargerThan499 && (
+          <InputGroup>
+            <Input
+              borderRadius="md"
+              fontSize="sm"
+              variant="filled"
+              placeholder="Search..."
+            />
+            <InputRightElement marginRight={2}>
+              <SearchIcon size={20} />
+            </InputRightElement>
+          </InputGroup>
+        )}
       </Flex>
       <Flex columnGap={6} data-test="navbar-right-side" alignItems="center">
         <IconButton
@@ -98,14 +102,16 @@ function Navbar({ onSidebarToggle, user }: Props) {
                   src={profileImage}
                 />
               </Box>
-              <Flex flexDirection="column" alignItems="start" rowGap={1}>
-                <Text color="accent-100" fontWeight="bold" fontSize="small">
-                  {user?.name}
-                </Text>
-                <Text color="accent-200" fontWeight="normal" fontSize="xs">
-                  {user?.occupation}
-                </Text>
-              </Flex>
+              {isLargerThan499 && (
+                <Flex flexDirection="column" alignItems="start" rowGap={1}>
+                  <Text color="accent-100" fontWeight="bold" fontSize="small">
+                    {user?.name}
+                  </Text>
+                  <Text color="accent-200" fontWeight="normal" fontSize="xs">
+                    {user?.occupation}
+                  </Text>
+                </Flex>
+              )}
             </Flex>
           </MenuButton>
           <MenuList>
