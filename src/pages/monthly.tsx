@@ -54,7 +54,7 @@ const Overview: NextPage = () => {
 
   return (
     <>
-      <PageHeadings title="DAILY SALES" subtitle="Chart of daily sales" />
+      <PageHeadings title="MONTHLY SALES" subtitle="Chart of monthly sales" />
       <Flex width="100%" flexDirection="column" alignItems="center">
         {status === "loading" ? (
           <Loading />
