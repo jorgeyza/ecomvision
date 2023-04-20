@@ -22,6 +22,25 @@ export const userRouter = createTRPCRouter({
       },
     });
   }),
+  getAllWithAdminRole: publicProcedure.query(({ ctx }) => {
+    return ctx.prisma.user.findMany({
+      where: { role: "admin" },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        city: true,
+        state: true,
+        country: true,
+        occupation: true,
+        phoneNumber: true,
+        role: true,
+        transactions: true,
+        AffiliateStat: true,
+        _count: true,
+      },
+    });
+  }),
   getGeography: publicProcedure.query(async ({ ctx }) => {
     const users = await ctx.prisma.user.findMany();
 
