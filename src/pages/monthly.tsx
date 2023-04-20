@@ -9,10 +9,10 @@ import PageHeadings from "~/components/ui/PageHeadings";
 import { api } from "~/utils/api";
 
 const Overview: NextPage = () => {
-  const [accent200, accent500, accent600, primary500] = useToken("colors", [
+  const [accent100, accent200, accent500, primary500] = useToken("colors", [
+    "accent-100",
     "accent-200",
     "accent-500",
-    "accent-600",
     "primary-500",
   ]);
 
@@ -33,7 +33,7 @@ const Overview: NextPage = () => {
     };
     const totalUnitsLine: Serie = {
       id: "totalUnits",
-      color: accent600,
+      color: accent100,
       data: [],
     };
 
