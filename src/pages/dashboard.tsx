@@ -1,4 +1,4 @@
-import { Button, Flex } from "@chakra-ui/react";
+import { Button, Flex, Heading } from "@chakra-ui/react";
 import { DownloadIcon } from "lucide-react";
 import { type NextPage } from "next";
 
@@ -20,6 +20,12 @@ const Dashboard: NextPage = () => {
           DOWNLOAD REPORTS
         </Button>
       </Flex>
+      <Heading>SITE UNDER CONSTRUCTION...</Heading>
+      <p style={{ fontSize: "24px" }}>Pending</p>
+      <ul>
+        <li>Dashboard</li>
+        <li>Performance</li>
+      </ul>
     </>
   );
 };
