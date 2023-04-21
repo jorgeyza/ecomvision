@@ -39,7 +39,6 @@ interface ProductStat {
 
 const Products: NextPage = () => {
   const { data: allProducts, status, error } = api.product.getAll.useQuery();
-  console.log("🚀 ~ file: products.tsx:25 ~ allProducts:", allProducts);
   return (
     <>
       <PageHeadings title="PRODUCTS" subtitle="See your list of products" />
