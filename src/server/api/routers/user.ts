@@ -1,7 +1,41 @@
+import { type Transaction } from "@prisma/client";
 import iso from "iso-3166-1";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+
+interface MongoID {
+  $oid: string;
+}
+
+interface MongoDate {
+  $date: Date;
+}
+
+interface UserWithStats {
+  _id: MongoID;
+  createdAt: MongoDate;
+  updatedAt: MongoDate;
+  name: string;
+  email: string;
+  password: string;
+  city: string;
+  state: null;
+  country: string;
+  occupation: string;
+  phoneNumber: string;
+  role: string;
+  transactions: MongoID[];
+  affiliateStats: AffiliateStats;
+}
+
+interface AffiliateStats {
+  _id: MongoID;
+  userId: MongoID;
+  affiliateSales: MongoID[];
+  createdAt: MongoDate;
+  updatedAt: MongoDate;
+}
 
 export const userRouter = createTRPCRouter({
   getUser: publicProcedure
@@ -79,12 +113,12 @@ export const userRouter = createTRPCRouter({
   getUserPerformance: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
-      const userWithStats = await ctx.prisma.user.aggregateRaw({
+      const userWithStats = (await ctx.prisma.user.aggregateRaw({
         pipeline: [
-          { $match: { _id: input.id } },
+          { $match: { _id: { $oid: input.id } } },
           {
             $lookup: {
-              from: "affiliatestats",
+              from: "AffiliateStat",
               localField: "_id",
               foreignField: "userId",
               as: "affiliateStats",
@@ -92,30 +126,22 @@ export const userRouter = createTRPCRouter({
           },
           { $unwind: "$affiliateStats" },
         ],
-      });
-      console.log(
-        "🚀 ~ file: user.ts:91 ~ .query ~ userWithStats:",
-        userWithStats
+      })) as unknown as UserWithStats[];
+
+      const foundUserWithStats = userWithStats[0];
+      if (!foundUserWithStats)
+        return { user: "User not found", sales: undefined };
+
+      const saleTransactions = await ctx.prisma.$transaction(
+        foundUserWithStats.affiliateStats.affiliateSales.map((id) => {
+          return ctx.prisma.transaction.findUnique({ where: { id: id.$oid } });
+        })
       );
 
-      // const saleTransactions = await Promise.all(
-      //   userWithStats[0].affiliateStats.affiliateSales.map((id) => {
-      //     return ctx.prisma.transaction.findMany({ where: { id } });
-      //   })
-      // );
-      // console.log(
-      //   "🚀 ~ file: user.ts:101 ~ .query ~ saleTransactions:",
-      //   saleTransactions
-      // );
+      const filteredSaleTransactions = saleTransactions.filter(
+        (transaction) => transaction !== null
+      ) as Transaction[];
 
-      // const filteredSaleTransactions = saleTransactions.filter(
-      //   (transaction) => transaction !== null
-      // );
-      // console.log(
-      //   "🚀 ~ file: user.ts:105 ~ .query ~ filteredSaleTransactions:",
-      //   filteredSaleTransactions
-      // );
-
-      // return { user: userWithStats[0], sales: filteredSaleTransactions };
+      return { user: foundUserWithStats, sales: filteredSaleTransactions };
     }),
 });
