@@ -34,31 +34,14 @@ async function main() {
             },
           });
         }
-        // Create transactions
         await tx.transaction.createMany({ data: dataTransaction });
+        await tx.affiliateStat.createMany({ data: dataAffiliateStat });
 
-        // Create affiliate stats and connect them to the users
-        for (const affiliateStatData of dataAffiliateStat) {
-          await tx.affiliateStat.create({
-            data: {
-              id: affiliateStatData.id,
-              affiliateSales: {
-                connect: affiliateStatData.affiliateSales.map(
-                  (transactionId) => ({
-                    id: transactionId,
-                  })
-                ),
-              },
-              user: { connect: { id: affiliateStatData.userId } },
-            },
-          });
-        }
-
-        console.log(`Created ${dataAffiliateStat.length} affiliateStats`);
         console.log(`Created ${dataOverallStat.length} overallStats`);
-        console.log(`Created ${dataProduct.length} products`);
         console.log(`Created ${dataProductStat.length} productStats`);
+        console.log(`Created ${dataProduct.length} products`);
         console.log(`Created ${dataTransaction.length} transactions`);
+        console.log(`Created ${dataAffiliateStat.length} affiliateStats`);
         console.log(`Created ${dataUser.length} users`);
       },
       {
