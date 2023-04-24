@@ -16,6 +16,7 @@ const inter = Inter({
 });
 
 export const selectedTableColumnAtom = atom("");
+export const currentUserIdAtom = atom("63701cc1f03239b7f700000e");
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (

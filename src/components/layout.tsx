@@ -14,12 +14,6 @@ interface Props {
   className: string;
 }
 
-const DUMMY_USER = {
-  id: "abc13824",
-  name: "Jorge",
-  occupation: "Developer",
-};
-
 const Layout = ({ children, className }: Props) => {
   const { isOpen: isSidebarOpen, onToggle: onToggleSideBar } = useDisclosure({
     defaultIsOpen: true,
@@ -32,13 +26,9 @@ const Layout = ({ children, className }: Props) => {
       overflowX={isSidebarOpen ? "hidden" : undefined}
       data-test="app-layout"
     >
-      <Sidebar
-        isOpen={isSidebarOpen}
-        onToggle={onToggleSideBar}
-        user={DUMMY_USER}
-      />
+      <Sidebar isOpen={isSidebarOpen} onToggle={onToggleSideBar} />
       <Flex direction="column" w="full" maxH="100vh" data-test="right-side">
-        <Navbar onSidebarToggle={onToggleSideBar} user={DUMMY_USER} />
+        <Navbar onSidebarToggle={onToggleSideBar} />
         <Flex
           as="main"
           align="flex-start"

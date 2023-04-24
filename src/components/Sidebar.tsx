@@ -29,17 +29,20 @@ import {
   TrendingUpIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  SettingsIcon,
 } from "lucide-react";
-import { Settings } from "lucide-react";
+import { useAtom } from "jotai";
+import NextImage from "next/image";
+
+import Loading from "./ui/Loading";
 
 import profileImage from "~/assets/profile_image.jpg";
-import NextImage from "next/image";
-import { type User } from "./layout";
+import { api } from "~/utils/api";
+import { currentUserIdAtom } from "~/pages/_app";
 
 interface Props {
   isOpen: boolean;
   onToggle: () => void;
-  user: User;
 }
 
 const navItems = [
@@ -101,7 +104,7 @@ const navItems = [
   },
 ];
 
-const Sidebar = ({ isOpen, onToggle, user }: Props) => {
+const Sidebar = ({ isOpen, onToggle }: Props) => {
   const router = useRouter();
   const currentPath = router.asPath;
   const [isSmallerOrEqualTo768] = useMediaQuery("(max-width: 768px)");
@@ -110,7 +113,16 @@ const Sidebar = ({ isOpen, onToggle, user }: Props) => {
     "whiteAlpha.200"
   );
 
+  const [currentUserId] = useAtom(currentUserIdAtom);
   const [active, setActive] = useState("");
+
+  const {
+    data: user,
+    status,
+    error,
+  } = api.user.getUser.useQuery({
+    id: currentUserId,
+  });
 
   function handleOnClickLink(lowcaseLabel: string) {
     setActive(lowcaseLabel);
@@ -241,30 +253,38 @@ const Sidebar = ({ isOpen, onToggle, user }: Props) => {
       >
         <Divider />
         <Flex alignItems="center" columnGap={4} marginY={8}>
-          <Box
-            position="relative"
-            overflow="hidden"
-            width="40px"
-            height="40px"
-            borderRadius="50%"
-          >
-            <NextImage
-              alt="profile"
-              style={{ objectFit: "cover" }}
-              fill
-              sizes="40px"
-              src={profileImage}
-            />
-          </Box>
-          <div>
-            <Text color="accent-100" fontWeight="bold" fontSize="small">
-              {user?.name}
-            </Text>
-            <Text color="accent-200" fontSize="smaller">
-              {user?.occupation}
-            </Text>
-          </div>
-          <Settings size={24} />
+          {status === "loading" ? (
+            <Loading />
+          ) : status === "error" ? (
+            <p>Error {error.message}</p>
+          ) : (
+            <>
+              <Box
+                position="relative"
+                overflow="hidden"
+                width="40px"
+                height="40px"
+                borderRadius="50%"
+              >
+                <NextImage
+                  alt="profile"
+                  style={{ objectFit: "cover" }}
+                  fill
+                  sizes="40px"
+                  src={profileImage}
+                />
+              </Box>
+              <div>
+                <Text color="accent-100" fontWeight="bold" fontSize="small">
+                  {user?.name}
+                </Text>
+                <Text color="accent-200" fontSize="smaller">
+                  {user?.occupation}
+                </Text>
+              </div>
+              <SettingsIcon size={24} />
+            </>
+          )}
         </Flex>
       </Flex>
     </Flex>

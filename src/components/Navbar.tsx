@@ -23,18 +23,31 @@ import {
   ChevronDownIcon,
 } from "lucide-react";
 import NextImage from "next/image";
+import { useAtom } from "jotai";
+
+import Loading from "./ui/Loading";
 
 import profileImage from "~/assets/profile_image.jpg";
-import { type User } from "./layout";
+import { currentUserIdAtom } from "~/pages/_app";
+import { api } from "~/utils/api";
 
 interface Props {
   onSidebarToggle: () => void;
-  user: User;
 }
 
-function Navbar({ onSidebarToggle, user }: Props) {
+function Navbar({ onSidebarToggle }: Props) {
   const { colorMode, toggleColorMode } = useColorMode();
   const [isLargerThan499] = useMediaQuery("(min-width: 500px)");
+
+  const [currentUserId] = useAtom(currentUserIdAtom);
+
+  const {
+    data: user,
+    status,
+    error,
+  } = api.user.getUser.useQuery({
+    id: currentUserId,
+  });
 
   return (
     <Flex
@@ -87,30 +100,46 @@ function Navbar({ onSidebarToggle, user }: Props) {
             rightIcon={<ChevronDownIcon />}
           >
             <Flex alignItems="center" columnGap={4}>
-              <Box
-                position="relative"
-                overflow="hidden"
-                width="32px"
-                height="32px"
-                borderRadius="50%"
-              >
-                <NextImage
-                  alt="profile"
-                  style={{ objectFit: "cover" }}
-                  fill
-                  sizes="32px"
-                  src={profileImage}
-                />
-              </Box>
-              {isLargerThan499 && (
-                <Flex flexDirection="column" alignItems="start" rowGap={1}>
-                  <Text color="accent-100" fontWeight="bold" fontSize="small">
-                    {user?.name}
-                  </Text>
-                  <Text color="accent-200" fontWeight="normal" fontSize="xs">
-                    {user?.occupation}
-                  </Text>
-                </Flex>
+              {status === "loading" ? (
+                <Loading />
+              ) : status === "error" ? (
+                <p>Error {error.message}</p>
+              ) : (
+                <>
+                  <Box
+                    position="relative"
+                    overflow="hidden"
+                    width="32px"
+                    height="32px"
+                    borderRadius="50%"
+                  >
+                    <NextImage
+                      alt="profile"
+                      style={{ objectFit: "cover" }}
+                      fill
+                      sizes="32px"
+                      src={profileImage}
+                    />
+                  </Box>
+                  {isLargerThan499 && (
+                    <Flex flexDirection="column" alignItems="start" rowGap={1}>
+                      <Text
+                        color="accent-100"
+                        fontWeight="bold"
+                        fontSize="small"
+                      >
+                        {user?.name}
+                      </Text>
+                      <Text
+                        color="accent-200"
+                        fontWeight="normal"
+                        fontSize="xs"
+                      >
+                        {user?.occupation}
+                      </Text>
+                    </Flex>
+                  )}
+                </>
               )}
             </Flex>
           </MenuButton>

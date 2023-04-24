@@ -1,8 +1,14 @@
 import iso from "iso-3166-1";
+import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 export const userRouter = createTRPCRouter({
+  getUser: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(({ ctx, input }) => {
+      return ctx.prisma.user.findUnique({ where: { id: input.id } });
+    }),
   getAllWithUserRole: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.user.findMany({
       where: { role: "user" },
@@ -70,4 +76,46 @@ export const userRouter = createTRPCRouter({
 
     return formattedLocations;
   }),
+  getUserPerformance: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const userWithStats = await ctx.prisma.user.aggregateRaw({
+        pipeline: [
+          { $match: { _id: input.id } },
+          {
+            $lookup: {
+              from: "affiliatestats",
+              localField: "_id",
+              foreignField: "userId",
+              as: "affiliateStats",
+            },
+          },
+          { $unwind: "$affiliateStats" },
+        ],
+      });
+      console.log(
+        "🚀 ~ file: user.ts:91 ~ .query ~ userWithStats:",
+        userWithStats
+      );
+
+      // const saleTransactions = await Promise.all(
+      //   userWithStats[0].affiliateStats.affiliateSales.map((id) => {
+      //     return ctx.prisma.transaction.findMany({ where: { id } });
+      //   })
+      // );
+      // console.log(
+      //   "🚀 ~ file: user.ts:101 ~ .query ~ saleTransactions:",
+      //   saleTransactions
+      // );
+
+      // const filteredSaleTransactions = saleTransactions.filter(
+      //   (transaction) => transaction !== null
+      // );
+      // console.log(
+      //   "🚀 ~ file: user.ts:105 ~ .query ~ filteredSaleTransactions:",
+      //   filteredSaleTransactions
+      // );
+
+      // return { user: userWithStats[0], sales: filteredSaleTransactions };
+    }),
 });
