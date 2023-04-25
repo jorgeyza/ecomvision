@@ -19,7 +19,7 @@ const BreakdownChart = ({ data, isDashboard = false }: Props) => {
   if (!data) return <p>No data!</p>;
   const { salesByCategory, yearlySalesTotal } = data;
 
-  const colors = [accent500, accent300, accent300, accent500];
+  const colors = [accent200, accent300, accent400, accent500];
   const formattedData = Object.entries(salesByCategory).map(
     ([category, sales], i) => ({
       id: category,
@@ -115,7 +115,7 @@ const BreakdownChart = ({ data, isDashboard = false }: Props) => {
                 {
                   on: "hover",
                   style: {
-                    itemTextColor: primary500,
+                    itemTextColor: accent300,
                   },
                 },
               ],
