@@ -8,7 +8,7 @@ import OverviewChart from "~/components/OverviewChart";
 
 import { api } from "~/utils/api";
 
-const viewEnum = {
+export const viewEnum = {
   UNITS: "units",
   SALES: "sales",
 } as const;
@@ -16,7 +16,7 @@ const viewEnum = {
 type ViewType = (typeof viewEnum)[keyof typeof viewEnum];
 
 const Overview: NextPage = () => {
-  const [view, setView] = useState<ViewType>("units");
+  const [view, setView] = useState<ViewType>(viewEnum.UNITS);
 
   const {
     data: allSales,
@@ -37,7 +37,7 @@ const Overview: NextPage = () => {
           <p>Error {error.message}</p>
         ) : (
           <Flex flexDirection="column" height="75vh" width="100%">
-            <FormControl sx={{ mt: "1rem" }}>
+            <FormControl marginTop={4}>
               <FormLabel>View</FormLabel>
               <Select
                 maxWidth="100px"
