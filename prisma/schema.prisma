@@ -85,15 +85,15 @@ model AffiliateStat {
 }
 
 type MonthlyData {
-    month      String?
-    totalSales Int?
-    totalUnits Int?
+    month      String
+    totalSales Int
+    totalUnits Int
 }
 
 type DailyData {
-    date       String?
-    totalSales Int?
-    totalUnits Int?
+    date       String
+    totalSales Int
+    totalUnits Int
 }
 
 type SalesByCategory {
