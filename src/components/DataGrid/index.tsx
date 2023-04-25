@@ -56,6 +56,7 @@ interface Props<T extends object> {
   };
   pageCount?: number;
   onSetPagination?: Dispatch<SetStateAction<PaginationState>>;
+  isDashboard?: boolean;
 }
 
 const DataGrid = <T extends object>({
@@ -65,6 +66,7 @@ const DataGrid = <T extends object>({
   pagination,
   onSetPagination,
   pageCount,
+  isDashboard = false,
 }: Props<T>) => {
   const {
     isOpen: isOpenVisibilityPopover,
@@ -141,12 +143,23 @@ const DataGrid = <T extends object>({
   const table = useReactTable(useReactTableProperties);
 
   return (
-    <Flex width="100%" flexDirection="column" rowGap={1} position="relative">
-      <DataGridOptions
-        onSetGlobalFilter={setGlobalFilter}
-        onToggleVisibilityPopover={onToggleVisibilityPopover}
-      />
-      <TableContainer overflowY="auto" maxHeight="75vh">
+    <Flex
+      width="100%"
+      flexDirection="column"
+      rowGap={1}
+      position="relative"
+      height="100%"
+    >
+      {!isDashboard && (
+        <DataGridOptions
+          onSetGlobalFilter={setGlobalFilter}
+          onToggleVisibilityPopover={onToggleVisibilityPopover}
+        />
+      )}
+      <TableContainer
+        overflowY="auto"
+        maxHeight={!isDashboard ? "75vh" : undefined}
+      >
         <ChakraTable
           variant="simple"
           backgroundColor="background-emphasis"
