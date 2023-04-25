@@ -14,7 +14,7 @@ import DataGrid from "~/components/DataGrid";
 
 import { type RouterOutputs, api } from "~/utils/api";
 
-type Transaction = RouterOutputs["transaction"]["getAll"][0];
+export type Transaction = RouterOutputs["transaction"]["getAll"][0];
 
 const fuzzyFilter: FilterFn<Transaction> = (
   row,
