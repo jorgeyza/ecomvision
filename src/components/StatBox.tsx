@@ -12,7 +12,8 @@ interface Props {
 const StatBox = ({ title, value, increase, icon, description }: Props) => {
   return (
     <GridItem
-      gridColumn="span 2"
+      display="flex"
+      gridColumn={{ base: "span 12", sm: "span 6", md: "span 2" }}
       gridRow="span 1"
       flexDirection="column"
       justifyContent="space-between"
@@ -22,18 +23,18 @@ const StatBox = ({ title, value, increase, icon, description }: Props) => {
       backgroundColor="background-emphasis"
       borderRadius="md"
     >
-      <Flex justifyContent="space-between">
-        <Text as="h6" color="accent-100">
+      <Flex justifyContent="space-between" color="accent-200">
+        <Text as="h6" fontSize="sm" color="accent-100">
           {title}
         </Text>
         {icon}
       </Flex>
 
-      <Text as="h3" fontWeight="600" color="accent-200">
+      <Text as="h3" fontWeight="bold" fontSize="2xl" color="accent-200">
         {value}
       </Text>
-      <Flex columnGap={4}>
-        <Text as="h5" fontStyle="italic" color="accent-700">
+      <Flex columnGap={4} alignItems="center">
+        <Text as="h5" fontSize="sm" fontStyle="italic" color="accent-400">
           {increase}
         </Text>
         <Text>{description}</Text>
