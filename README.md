@@ -4,9 +4,9 @@
 
 This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`. Design by [EdRoh](https://www.youtube.com/@EdRohDev)
 
-If you use a local MongoDB replica set, remember to first seed your database `pnpm prisma db seed`
+Remember to first seed your database `pnpm prisma db seed`. You need a Mongo database with a replica set or a Mongo Atlas database, which already has a replica set configured.
 
-Web app for data visualization with a dashboard, tables and charts generated with Nivo Charts.
+Web app for data visualization with a dashboard, tables generated with `TanStack Table` and charts generated with `nivo`.
 
 This projects has both client-side and server-side pagination for the tables. You can filter tables globally or per column and also sort them.
 
@@ -14,7 +14,7 @@ To start project use `pnpm dev`. You can see the [live application here](https:/
 
 ## Docker
 
-You can use `docker-compose up` to run a local docker container that has a MongoDB with a replica set already configured if you don't want to provide a Mongo Atlas database. Use the provided connection string `DATABASE_URL_DEV` in `.env.example`
+You can use `docker-compose up -d` to run a local docker container that has a MongoDB with a replica set already configured if you don't want to provide a Mongo Atlas database. Use the provided connection string `DATABASE_URL_DEV` in `.env.example`
 
 ## Envs
 
@@ -28,3 +28,5 @@ You can use `docker-compose up` to run a local docker container that has a Mongo
 - [ChakraUI](https://chakra-ui.com/)
 - [tRPC](https://trpc.io)
 - [MongoDB](https://www.mongodb.com/)
+- [nivo](https://nivo.rocks/)
+- [TanStack Table](https://tanstack.com/table/v8)
