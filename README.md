@@ -6,9 +6,13 @@ This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3
 
 Remember to first seed your database `pnpm prisma db seed`. You need a Mongo database with a replica set or a Mongo Atlas database, which already has a replica set configured.
 
-Web app for data visualization with a dashboard, tables generated with `TanStack Table` and charts generated with `nivo`.
+Web app for data visualization with a dashboard, tables generated with `TanStack Table` and charts generated with `nivo`. Users are able to:
 
-This projects has both client-side and server-side pagination for the tables. You can filter tables globally or per column and also sort them.
+- Easily read the most important data presented in an e-commerce dashboard.
+- Benefit from both client-side and server-side pagination for tables, providing efficient data transfer and fast loading times.
+- Filter tables globally or per column for easy data exploration and analysis.
+- Sort tables for better organization and decision-making.
+- Experience a visually appealing, responsive and accessible user interface created using ChakraUI.
 
 To start project use `pnpm dev`. You can see the [live application here](https://ecomvision.jorgeyza.com)
 
